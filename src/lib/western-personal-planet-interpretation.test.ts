@@ -23,14 +23,14 @@ const vietnamBirthInput = {
 } as const;
 
 describe("western personal planet interpretation rules", () => {
-  it("contains exactly 12 complete Mercury rules", () => {
-    expect(personalPlanetInterpretationFactors).toEqual(["Mercury"]);
-    expect(westernPersonalPlanetInterpretationRules).toHaveLength(12);
+  it("contains exactly 24 complete Mercury and Venus rules", () => {
+    expect(personalPlanetInterpretationFactors).toEqual(["Mercury", "Venus"]);
+    expect(westernPersonalPlanetInterpretationRules).toHaveLength(24);
     expect(
       new Set(
         westernPersonalPlanetInterpretationRules.map(({ ruleId }) => ruleId),
       ).size,
-    ).toBe(12);
+    ).toBe(24);
 
     for (const rule of westernPersonalPlanetInterpretationRules) {
       expect(rule.summary.trim()).not.toBe("");
@@ -47,16 +47,21 @@ describe("western personal planet interpretation rules", () => {
         rule.developmentAdvice.every((item) => item.trim().length > 0),
       ).toBe(true);
       expect(rule.version).toBe("1.0.0");
-      expect(rule.evidence.body).toBe("Mercury");
+      expect(personalPlanetInterpretationFactors).toContain(
+        rule.evidence.body,
+      );
     }
   });
 
-  it("covers all twelve zodiac signs", () => {
-    expect(
-      westernPersonalPlanetInterpretationRules
-        .map(({ evidence }) => evidence.sign)
-        .sort(),
-    ).toEqual([...zodiacSigns].sort());
+  it("covers all twelve zodiac signs for Mercury and Venus", () => {
+    for (const factor of personalPlanetInterpretationFactors) {
+      expect(
+        westernPersonalPlanetInterpretationRules
+          .filter(({ evidence }) => evidence.body === factor)
+          .map(({ evidence }) => evidence.sign)
+          .sort(),
+      ).toEqual([...zodiacSigns].sort());
+    }
   });
 
   it("selects the correct Mercury interpretation by sign", () => {
@@ -69,19 +74,34 @@ describe("western personal planet interpretation rules", () => {
     );
   });
 
+  it("selects the correct Venus interpretation by sign", () => {
+    expect(getPersonalPlanetInterpretationRule("Venus", "Aries")).toMatchObject(
+      {
+        ruleId: "WESTERN-VENUS-ARIES-V1",
+        title: "Sao Kim Bạch Dương",
+        evidence: { body: "Venus", sign: "Aries" },
+      },
+    );
+  });
+
   it("keeps rule IDs stable for every sign", () => {
     for (const sign of zodiacSigns) {
       expect(getPersonalPlanetInterpretationRule("Mercury", sign).ruleId).toBe(
         `WESTERN-MERCURY-${sign.toUpperCase()}-V1`,
+      );
+      expect(getPersonalPlanetInterpretationRule("Venus", sign).ruleId).toBe(
+        `WESTERN-VENUS-${sign.toUpperCase()}-V1`,
       );
     }
   });
 });
 
 describe("interpretWesternPersonalPlanets", () => {
-  it("uses the calculated Mercury position", () => {
+  it("uses the calculated Mercury and Venus positions in order", () => {
     const result = calculateWesternAstrology(vietnamBirthInput);
     const interpretation = interpretWesternPersonalPlanets(result);
+    const mercury = result.bodies.find(({ name }) => name === "Mercury");
+    const venus = result.bodies.find(({ name }) => name === "Venus");
 
     expect(
       interpretation.positions.map(({ factor, sign, rule }) => [
@@ -90,7 +110,12 @@ describe("interpretWesternPersonalPlanets", () => {
         rule.ruleId,
       ]),
     ).toEqual([
-      ["Mercury", "Capricorn", "WESTERN-MERCURY-CAPRICORN-V1"],
+      [
+        "Mercury",
+        mercury?.sign,
+        `WESTERN-MERCURY-${mercury?.sign.toUpperCase()}-V1`,
+      ],
+      ["Venus", venus?.sign, `WESTERN-VENUS-${venus?.sign.toUpperCase()}-V1`],
     ]);
   });
 
@@ -112,7 +137,7 @@ describe("interpretWesternPersonalPlanets", () => {
     expect(result).toEqual(snapshot);
   });
 
-  it("keeps evidence traceable from the selected output", () => {
+  it("keeps Mercury evidence traceable from the selected output", () => {
     const result = calculateWesternAstrology(vietnamBirthInput);
     const [position] = interpretWesternPersonalPlanets(result).positions;
 
@@ -129,6 +154,31 @@ describe("interpretWesternPersonalPlanets", () => {
     );
   });
 
+  it("keeps Venus evidence traceable from the selected output", () => {
+    const result = calculateWesternAstrology(vietnamBirthInput);
+    const venus = result.bodies.find(({ name }) => name === "Venus");
+    const position = interpretWesternPersonalPlanets(result).positions.find(
+      ({ factor }) => factor === "Venus",
+    );
+
+    expect(position).toMatchObject({
+      factor: "Venus",
+      longitude: venus?.longitude,
+      sign: venus?.sign,
+      degree: venus?.degree,
+      minute: venus?.minute,
+      retrograde: venus?.retrograde,
+      rule: {
+        ruleId: `WESTERN-VENUS-${venus?.sign.toUpperCase()}-V1`,
+        version: "1.0.0",
+        evidence: {
+          body: "Venus",
+          sign: venus?.sign,
+        },
+      },
+    });
+  });
+
   it("fails clearly when Mercury is missing", () => {
     const result = calculateWesternAstrology(vietnamBirthInput);
     const missingMercury: WesternAstrologyResult = {
@@ -141,6 +191,21 @@ describe("interpretWesternPersonalPlanets", () => {
     );
     expect(() => interpretWesternPersonalPlanets(missingMercury)).toThrow(
       "Mercury",
+    );
+  });
+
+  it("fails clearly when Venus is missing", () => {
+    const result = calculateWesternAstrology(vietnamBirthInput);
+    const missingVenus: WesternAstrologyResult = {
+      ...result,
+      bodies: result.bodies.filter(({ name }) => name !== "Venus"),
+    };
+
+    expect(() => interpretWesternPersonalPlanets(missingVenus)).toThrow(
+      WesternPersonalPlanetInterpretationError,
+    );
+    expect(() => interpretWesternPersonalPlanets(missingVenus)).toThrow(
+      "Venus",
     );
   });
 });

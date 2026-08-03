@@ -18,6 +18,10 @@ const factorPresentation: Record<
     label: "Sao Thủy",
     role: "Tư duy, học hỏi và giao tiếp",
   },
+  Venus: {
+    label: "Sao Kim",
+    role: "Tình cảm, giá trị và sự hòa hợp",
+  },
 };
 
 export type PersonalPlanetInterpretationPosition = Readonly<{

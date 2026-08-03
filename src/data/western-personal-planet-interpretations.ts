@@ -4,7 +4,7 @@ import {
   type ZodiacSign,
 } from "../lib/western-astrology";
 
-export const personalPlanetInterpretationFactors = ["Mercury"] as const;
+export const personalPlanetInterpretationFactors = ["Mercury", "Venus"] as const;
 
 export type PersonalPlanetInterpretationFactor =
   (typeof personalPlanetInterpretationFactors)[number];
@@ -30,6 +30,7 @@ type RuleContent = Omit<
 
 const factorTitles: Record<PersonalPlanetInterpretationFactor, string> = {
   Mercury: "Sao Thủy",
+  Venus: "Sao Kim",
 };
 
 const mercuryContent: Record<ZodiacSign, RuleContent> = {
@@ -232,6 +233,200 @@ const contentByFactor: Record<
   Record<ZodiacSign, RuleContent>
 > = {
   Mercury: mercuryContent,
+  Venus: {
+    Aries: {
+      summary:
+        "Sao Kim Bạch Dương có xu hướng thể hiện tình cảm một cách thẳng, nhanh và nhiều sức sống. Bạn thường cảm thấy được trân trọng khi sự yêu thích được bộc lộ rõ ràng, có sự chủ động và có không gian cho cảm giác mới mẻ.",
+      strengths: [
+        "Dễ tạo cảm giác tươi mới, nhiệt thành và rõ ý trong kết nối",
+        "Thường biết khởi động niềm vui chung bằng sự chân thành trực tiếp",
+      ],
+      challenges: [
+        "Đôi khi muốn phản hồi ngay trước khi cảm xúc của cả hai kịp lắng xuống",
+        "Có thể thấy khó chịu với nhịp quan hệ quá chậm hoặc quá nhiều vòng vo",
+      ],
+      developmentAdvice: [
+        "Tập hỏi người kia cần nhịp gần gũi nhanh hay chậm trước khi tiến thêm",
+        "Giữ sự chủ động nhưng dành thêm chỗ cho sự dịu dàng và lắng nghe",
+      ],
+    },
+    Taurus: {
+      summary:
+        "Sao Kim Kim Ngưu thường tìm kiếm sự ổn định, cảm giác dễ chịu và những biểu hiện tình cảm có thể chạm thấy trong đời sống hằng ngày. Bạn có xu hướng coi trọng sự bền bỉ, gu thẩm mỹ tinh tế và nhịp kết nối đủ an toàn.",
+      strengths: [
+        "Biết chăm chút không gian, cơ thể và những điều nhỏ làm quan hệ ấm hơn",
+        "Thường đem lại cảm giác đáng tin, kiên nhẫn và có mặt thật sự",
+      ],
+      challenges: [
+        "Đôi khi bám vào vùng quen thuộc dù quan hệ cần đổi mới",
+        "Có thể khó nói rõ nhu cầu khi sợ làm xáo trộn sự yên ổn",
+      ],
+      developmentAdvice: [
+        "Cho phép những thay đổi nhỏ, đều đặn thay vì chờ đến khi mọi thứ thật chắc",
+        "Nói rõ điều bạn coi trọng để người khác hiểu cách làm bạn thấy được trân trọng",
+      ],
+    },
+    Gemini: {
+      summary:
+        "Sao Kim Song Tử có xu hướng tìm niềm vui qua trò chuyện, học hỏi và sự linh hoạt trong tương tác. Bạn thường cảm thấy gần gũi hơn khi có thể chia sẻ ý tưởng, đùa vui, đổi góc nhìn và giữ kết nối luôn có sự sống động.",
+      strengths: [
+        "Dễ làm quan hệ nhẹ nhàng bằng sự tò mò và khả năng trò chuyện",
+        "Thường biết kết nối qua chữ nghĩa, câu chuyện và những mối quan tâm chung",
+      ],
+      challenges: [
+        "Đôi khi phân tán khi có quá nhiều lựa chọn hoặc kích thích mới",
+        "Có thể dùng sự hài hước để né một cảm xúc cần được gọi tên",
+      ],
+      developmentAdvice: [
+        "Giữ một vài nghi thức kết nối ổn định bên cạnh nhu cầu đổi mới",
+        "Khi nói chuyện vui đã đủ, hãy thêm một câu thật lòng về điều bạn đang cần",
+      ],
+    },
+    Cancer: {
+      summary:
+        "Sao Kim Cự Giải thường coi trọng sự chăm sóc, ký ức chung và cảm giác được bảo bọc trong quan hệ. Bạn có xu hướng thể hiện tình cảm qua sự quan tâm tinh tế, sự nhớ nhung và khả năng tạo một nơi chốn thân thuộc.",
+      strengths: [
+        "Nhạy với những nhu cầu nhỏ giúp người khác thấy được nâng niu",
+        "Thường tạo được bầu không khí ấm, riêng tư và giàu cảm giác thuộc về",
+      ],
+      challenges: [
+        "Đôi khi rút vào im lặng khi cảm thấy chưa được đáp lại đủ dịu dàng",
+        "Có thể giữ quá lâu một chuyện cũ nếu nó gắn với cảm giác bị bỏ quên",
+      ],
+      developmentAdvice: [
+        "Nói nhu cầu chăm sóc bằng lời rõ ràng thay vì chỉ chờ người khác tự hiểu",
+        "Phân biệt ký ức quý giá với thói quen phòng vệ không còn cần thiết",
+      ],
+    },
+    Leo: {
+      summary:
+        "Sao Kim Sư Tử có xu hướng yêu thích sự ấm áp, lòng hào phóng và cảm giác được nhìn thấy. Bạn thường tạo hòa hợp bằng sự rạng rỡ, khen ngợi chân thành và mong muốn cùng nhau tận hưởng điều đẹp đẽ có màu sắc riêng.",
+      strengths: [
+        "Biết làm người khác cảm thấy đặc biệt bằng sự chú ý rộng rãi",
+        "Thường đem đến niềm vui, sự sáng tạo và tinh thần ăn mừng trong kết nối",
+      ],
+      challenges: [
+        "Đôi khi nhạy cảm khi thiện ý hoặc nỗ lực của mình không được ghi nhận",
+        "Có thể cần học cách để người khác cũng được tỏa sáng theo cách của họ",
+      ],
+      developmentAdvice: [
+        "Nói thẳng điều khiến bạn thấy được trân trọng thay vì thử lòng bằng im lặng",
+        "Chia sẻ sân khấu cảm xúc bằng cách hỏi người kia muốn được yêu thương ra sao",
+      ],
+    },
+    Virgo: {
+      summary:
+        "Sao Kim Xử Nữ thường thể hiện tình cảm qua sự chu đáo, cải thiện đời sống và những hành động nhỏ có ích. Bạn có xu hướng coi trọng sự tinh tế, tính đúng mực và cảm giác rằng yêu thương cũng nằm trong việc chăm sóc chi tiết.",
+      strengths: [
+        "Nhận ra điều nhỏ cần sửa để không gian chung dễ chịu hơn",
+        "Thường yêu bằng sự tận tâm, thực tế và đáng tin trong ngày thường",
+      ],
+      challenges: [
+        "Đôi khi soi lỗi quá kỹ khiến niềm vui tự nhiên bị thu hẹp",
+        "Có thể ngại nhận lời khen hoặc sự chăm sóc khi chưa thấy mình đủ tốt",
+      ],
+      developmentAdvice: [
+        "Cho phép sự không hoàn hảo có chỗ đứng trong những khoảnh khắc thân mật",
+        "Cân bằng góp ý bằng lời ghi nhận cụ thể về điều đang hoạt động tốt",
+      ],
+    },
+    Libra: {
+      summary:
+        "Sao Kim Thiên Bình thường tìm kiếm sự hài hòa, công bằng và vẻ đẹp trong cách hai bên gặp nhau. Bạn có xu hướng coi trọng sự tinh tế trong ứng xử, khả năng lắng nghe lẫn nhau và những lựa chọn giúp quan hệ cân bằng hơn.",
+      strengths: [
+        "Giỏi tạo không gian lịch thiệp, dễ chịu và có tính hợp tác",
+        "Thường nhìn được nhu cầu của hai phía trong một tương tác",
+      ],
+      challenges: [
+        "Đôi khi né bất đồng vì muốn giữ bầu khí yên đẹp",
+        "Có thể đặt sự vừa lòng của người khác lên trước mong muốn thật của mình",
+      ],
+      developmentAdvice: [
+        "Nêu rõ điều bạn thích trước khi tìm điểm cân bằng chung",
+        "Xem xung đột nhỏ như cơ hội chỉnh nhịp chứ không phải dấu hiệu mất hòa hợp",
+      ],
+    },
+    Scorpio: {
+      summary:
+        "Sao Kim Bọ Cạp có xu hướng tìm kiếm sự sâu sắc, trung thực cảm xúc và cảm giác kết nối có chiều sâu. Bạn thường coi trọng sự tin cậy, khả năng hiện diện qua những lớp khó nói và vẻ đẹp của điều chân thật, không hời hợt.",
+      strengths: [
+        "Có sức hiện diện mạnh khi một kết nối cần sự chân thành sâu",
+        "Thường nhận ra sắc thái ẩn bên dưới lời nói và cử chỉ",
+      ],
+      challenges: [
+        "Đôi khi kiểm soát thông tin hoặc cảm xúc khi chưa thấy đủ an toàn",
+        "Có thể đọc một khoảng im lặng như dấu hiệu căng thẳng hơn mức thực tế",
+      ],
+      developmentAdvice: [
+        "Tạo lòng tin bằng các bước chia sẻ vừa sức thay vì đòi mọi thứ rõ ngay",
+        "Kiểm tra cảm nhận bằng câu hỏi mềm trước khi kết luận về động cơ của người khác",
+      ],
+    },
+    Sagittarius: {
+      summary:
+        "Sao Kim Nhân Mã thường tìm niềm vui trong sự rộng mở, trải nghiệm và cảm giác cùng nhau lớn lên. Bạn có xu hướng coi trọng sự tự do, tinh thần học hỏi và những kết nối giúp cuộc sống có thêm ý nghĩa.",
+      strengths: [
+        "Dễ đem lại sự lạc quan, thẳng thắn và cảm giác phiêu lưu lành mạnh",
+        "Thường yêu thích những quan hệ có không gian khám phá và phát triển",
+      ],
+      challenges: [
+        "Đôi khi bỏ qua chi tiết thân gần vì đang nhìn về chân trời xa hơn",
+        "Có thể vô tình nói quá thẳng khi người kia cần sự mềm mại trước",
+      ],
+      developmentAdvice: [
+        "Kết nối tự do với cam kết cụ thể về cách bạn vẫn hiện diện",
+        "Chậm lại để hỏi điều gì giúp người kia thấy an tâm trong hành trình chung",
+      ],
+    },
+    Capricorn: {
+      summary:
+        "Sao Kim Ma Kết thường coi trọng sự chín chắn, trách nhiệm và những biểu hiện tình cảm có độ bền. Bạn có xu hướng tìm sự hòa hợp qua cam kết thực tế, cách cư xử đáng tin và vẻ đẹp của những điều được xây dựng có thời gian.",
+      strengths: [
+        "Thường thể hiện sự quan tâm bằng hành động có trách nhiệm và bền bỉ",
+        "Có gu thẩm mỹ tiết chế, chất lượng và tôn trọng giá trị lâu dài",
+      ],
+      challenges: [
+        "Đôi khi khó thả lỏng để nhận niềm vui đơn giản mà chưa có mục tiêu rõ",
+        "Có thể nghe dè dặt khi thật ra đang cố bảo vệ điều mình coi trọng",
+      ],
+      developmentAdvice: [
+        "Tập gọi tên sự quý mến bằng lời ấm hơn bên cạnh hành động đáng tin",
+        "Cho phép quan hệ có những khoảnh khắc vui nhẹ không cần chứng minh hiệu quả",
+      ],
+    },
+    Aquarius: {
+      summary:
+        "Sao Kim Bảo Bình có xu hướng coi trọng tình bạn, sự tự do và nét khác biệt trong kết nối. Bạn thường tìm thấy vẻ đẹp ở sự độc đáo, các giá trị tiến bộ và những quan hệ cho phép mỗi người vẫn là chính mình.",
+      strengths: [
+        "Dễ tôn trọng khác biệt và tạo không gian cho cá tính riêng",
+        "Thường kết nối qua lý tưởng, cộng đồng hoặc góc nhìn mới mẻ",
+      ],
+      challenges: [
+        "Đôi khi giữ khoảng cách trí óc khi người khác cần tín hiệu ấm áp hơn",
+        "Có thể ưu tiên nguyên tắc tự do mà quên một nghi thức gần gũi cụ thể",
+      ],
+      developmentAdvice: [
+        "Thêm những cử chỉ đều đặn để sự tự do vẫn có cảm giác được chăm sóc",
+        "Nói rõ nhu cầu khoảng riêng cùng lúc xác nhận sự trân trọng dành cho người kia",
+      ],
+    },
+    Pisces: {
+      summary:
+        "Sao Kim Song Ngư thường tìm kiếm sự dịu dàng, đồng cảm và vẻ đẹp giàu tưởng tượng trong quan hệ. Bạn có xu hướng thể hiện tình cảm qua lòng bao dung, nghệ thuật, sự lắng nghe mềm và khả năng cảm nhận điều khó nói thành lời.",
+      strengths: [
+        "Dễ tạo cảm giác được thấu hiểu bằng sự mềm mại và lòng trắc ẩn",
+        "Thường có gu thẩm mỹ mộng, tinh tế và giàu cảm xúc",
+      ],
+      challenges: [
+        "Đôi khi lý tưởng hóa một kết nối trước khi nhìn đủ dữ kiện thực tế",
+        "Có thể khó nói ranh giới vì sợ làm mất đi sự dịu dàng",
+      ],
+      developmentAdvice: [
+        "Giữ lòng mở nhưng đặt ranh giới cụ thể về thời gian, năng lượng và kỳ vọng",
+        "Chuyển cảm nhận mơ hồ thành một đề nghị rõ để người khác có thể đáp lại",
+      ],
+    },
+  },
 };
 
 function createRule(
