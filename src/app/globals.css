@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f1f4f3;
+  --foreground: #182a29;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #dceae6;
+  color: #153433;
+}
