@@ -42,7 +42,9 @@ function InterpretationList({
 export function WesternPersonalPlanets({
   result,
 }: WesternPersonalPlanetsProps) {
-  const [expandedRuleId, setExpandedRuleId] = useState<string | null>(null);
+  const [expandedRuleIds, setExpandedRuleIds] = useState<ReadonlyArray<string>>(
+    [],
+  );
   let interpretation;
 
   try {
@@ -86,7 +88,7 @@ export function WesternPersonalPlanets({
 
       <div className="mt-4 grid gap-4">
         {interpretation.positions.map((position) => {
-          const isExpanded = expandedRuleId === position.rule.ruleId;
+          const isExpanded = expandedRuleIds.includes(position.rule.ruleId);
           const evidenceId = `${position.rule.ruleId.toLowerCase()}-evidence`;
 
           return (
@@ -138,10 +140,12 @@ export function WesternPersonalPlanets({
                 aria-expanded={isExpanded}
                 aria-controls={evidenceId}
                 onClick={() =>
-                  setExpandedRuleId((current) =>
-                    current === position.rule.ruleId
-                      ? null
-                      : position.rule.ruleId,
+                  setExpandedRuleIds((current) =>
+                    current.includes(position.rule.ruleId)
+                      ? current.filter(
+                          (ruleId) => ruleId !== position.rule.ruleId,
+                        )
+                      : [...current, position.rule.ruleId],
                   )
                 }
                 className="mt-5 flex min-h-10 w-full items-center justify-between gap-3 border-t border-[#d7dfdc] pt-4 text-left text-sm font-semibold text-[#1c6d68] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#1c6d68]"

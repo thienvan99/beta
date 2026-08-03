@@ -22,6 +22,10 @@ const factorPresentation: Record<
     label: "Sao Kim",
     role: "Tình cảm, giá trị và sự hòa hợp",
   },
+  Mars: {
+    label: "Sao Hỏa",
+    role: "Động lực, hành động và ranh giới cá nhân",
+  },
 };
 
 export type PersonalPlanetInterpretationPosition = Readonly<{

@@ -4,7 +4,11 @@ import {
   type ZodiacSign,
 } from "../lib/western-astrology";
 
-export const personalPlanetInterpretationFactors = ["Mercury", "Venus"] as const;
+export const personalPlanetInterpretationFactors = [
+  "Mercury",
+  "Venus",
+  "Mars",
+] as const;
 
 export type PersonalPlanetInterpretationFactor =
   (typeof personalPlanetInterpretationFactors)[number];
@@ -31,6 +35,7 @@ type RuleContent = Omit<
 const factorTitles: Record<PersonalPlanetInterpretationFactor, string> = {
   Mercury: "Sao Thủy",
   Venus: "Sao Kim",
+  Mars: "Sao Hỏa",
 };
 
 const mercuryContent: Record<ZodiacSign, RuleContent> = {
@@ -424,6 +429,200 @@ const contentByFactor: Record<
       developmentAdvice: [
         "Giữ lòng mở nhưng đặt ranh giới cụ thể về thời gian, năng lượng và kỳ vọng",
         "Chuyển cảm nhận mơ hồ thành một đề nghị rõ để người khác có thể đáp lại",
+      ],
+    },
+  },
+  Mars: {
+    Aries: {
+      summary:
+        "Sao Hỏa Bạch Dương có xu hướng hành động nhanh, trực diện và mạnh ở bước khởi đầu. Bạn thường dùng năng lượng tốt nhất khi mục tiêu rõ, có quyền tự quyết và được phép thử ngay thay vì chờ mọi thứ hoàn hảo.",
+      strengths: [
+        "Khởi động việc mới nhanh và ít sợ va chạm ban đầu",
+        "Quyết đoán khi cần chọn hướng và tiến lên trước",
+      ],
+      challenges: [
+        "Có thể phản ứng quá sớm khi gặp cản trở hoặc bị trì hoãn",
+        "Dễ mất nhịp nếu mục tiêu cần sự bền bỉ lặp lại trong thời gian dài",
+      ],
+      developmentAdvice: [
+        "Dành một nhịp kiểm tra hậu quả trước khi tăng tốc",
+        "Chia mục tiêu lớn thành các chặng ngắn để giữ lửa mà không đốt sức quá nhanh",
+      ],
+    },
+    Taurus: {
+      summary:
+        "Sao Hỏa Kim Ngưu thường hành động theo nhịp chắc, bền và cần thấy giá trị thực tế trước khi dồn lực. Khi đã cam kết, bạn có xu hướng theo đuổi mục tiêu bằng sự kiên trì và khả năng giữ vững ranh giới rất rõ.",
+      strengths: [
+        "Bền sức với những mục tiêu cần thời gian và sự đều đặn",
+        "Biết bảo vệ nguồn lực cá nhân trước các yêu cầu thiếu thực tế",
+      ],
+      challenges: [
+        "Có thể chậm đổi hướng khi hoàn cảnh đã cần điều chỉnh",
+        "Dễ giữ căng thẳng trong người trước khi nói rõ điều mình không đồng ý",
+      ],
+      developmentAdvice: [
+        "Đặt mốc kiểm tra định kỳ để biết khi nào nên tiếp tục hoặc đổi chiến thuật",
+        "Tập nói ranh giới sớm bằng câu ngắn, rõ và bình tĩnh",
+      ],
+    },
+    Gemini: {
+      summary:
+        "Sao Hỏa Song Tử có xu hướng dùng năng lượng qua lời nói, ý tưởng và sự linh hoạt. Bạn thường tiến nhanh khi được trao đổi, thử nhiều cách tiếp cận và biến mục tiêu thành chuỗi nhiệm vụ đa dạng.",
+      strengths: [
+        "Phản ứng nhanh trước thông tin mới và dễ đổi chiến thuật",
+        "Có động lực mạnh khi mục tiêu cần học hỏi, viết, nói hoặc kết nối",
+      ],
+      challenges: [
+        "Có thể phân tán năng lượng vào quá nhiều hướng cùng lúc",
+        "Dễ tranh luận lâu hơn mức cần thiết khi gặp phản đối",
+      ],
+      developmentAdvice: [
+        "Giới hạn số ưu tiên hành động trong một ngày để tránh hao lực",
+        "Kết thúc mỗi cuộc trao đổi bằng quyết định hoặc bước tiếp theo cụ thể",
+      ],
+    },
+    Cancer: {
+      summary:
+        "Sao Hỏa Cự Giải thường hành động từ cảm giác cần bảo vệ điều thân thuộc, an toàn hoặc có ý nghĩa riêng. Năng lượng của bạn mạnh hơn khi mục tiêu gắn với người mình quan tâm và khi ranh giới cảm xúc được tôn trọng.",
+      strengths: [
+        "Bền bỉ bảo vệ điều mình coi là quan trọng",
+        "Nhạy với thời điểm cần tiến lên hoặc lùi lại để giữ an toàn cho tập thể",
+      ],
+      challenges: [
+        "Có thể phản ứng vòng quanh khi chưa nói thẳng điều khiến mình khó chịu",
+        "Dễ để cảm xúc tức thời quyết định nhịp hành động",
+      ],
+      developmentAdvice: [
+        "Gọi tên nhu cầu bảo vệ hoặc ranh giới trước khi hành động phòng vệ",
+        "Tách cảm xúc hiện tại khỏi bước thực tế cần làm trong vài giờ tới",
+      ],
+    },
+    Leo: {
+      summary:
+        "Sao Hỏa Sư Tử có xu hướng hành động với lòng tự hào, sự sáng tạo và mong muốn tạo dấu ấn. Bạn thường dồn lực tốt khi mục tiêu cho phép thể hiện năng lực riêng và khi nỗ lực được nhìn nhận đúng mức.",
+      strengths: [
+        "Có sức lãnh đạo và truyền động lực khi theo đuổi mục tiêu",
+        "Dám đứng ra bảo vệ lựa chọn cá nhân bằng sự rõ ràng",
+      ],
+      challenges: [
+        "Có thể chùn hoặc nóng lên khi cảm thấy mình bị xem nhẹ",
+        "Dễ đặt quá nhiều năng lượng vào việc chứng minh bản thân",
+      ],
+      developmentAdvice: [
+        "Tách phẩm giá cá nhân khỏi kết quả tạm thời của một việc",
+        "Chọn cách thể hiện bản lĩnh bằng sự ổn định thay vì phản ứng lớn",
+      ],
+    },
+    Virgo: {
+      summary:
+        "Sao Hỏa Xử Nữ thường hành động qua phân tích, cải thiện và những bước nhỏ có ích. Bạn có xu hướng dùng năng lượng hiệu quả khi mục tiêu được chia rõ, có tiêu chuẩn cụ thể và cho phép sửa sai liên tục.",
+      strengths: [
+        "Giỏi phát hiện điểm cần chỉnh để công việc chạy tốt hơn",
+        "Có kỷ luật trong các nhiệm vụ cần độ chính xác và chăm chút",
+      ],
+      challenges: [
+        "Có thể trì hoãn hành động vì muốn phương án đủ hoàn hảo",
+        "Dễ tự căng thẳng khi mọi thứ không đạt chuẩn như dự kiến",
+      ],
+      developmentAdvice: [
+        "Xác định mức đủ tốt trước khi bắt tay vào việc",
+        "Dành năng lượng cho một cải thiện quan trọng thay vì sửa mọi chi tiết cùng lúc",
+      ],
+    },
+    Libra: {
+      summary:
+        "Sao Hỏa Thiên Bình thường hành động thông qua cân nhắc, hợp tác và khả năng điều chỉnh theo người khác. Bạn có thể theo đuổi mục tiêu tốt khi có tiêu chí công bằng rõ ràng và khi sự quyết đoán không phải đánh đổi với sự lịch thiệp.",
+      strengths: [
+        "Biết thúc đẩy việc chung bằng đối thoại và cảm giác công bằng",
+        "Có khả năng chọn hành động giúp giảm căng thẳng giữa các phía",
+      ],
+      challenges: [
+        "Có thể do dự lâu khi quyết định làm người khác không hài lòng",
+        "Dễ né xung đột nhỏ đến khi ranh giới cá nhân bị mờ",
+      ],
+      developmentAdvice: [
+        "Viết rõ điều bạn muốn trước khi thương lượng điểm cân bằng",
+        "Tập nói không bằng cách ngắn gọn, tôn trọng và không xin lỗi quá mức",
+      ],
+    },
+    Scorpio: {
+      summary:
+        "Sao Hỏa Bọ Cạp có xu hướng hành động tập trung, kín đáo và mạnh khi mục tiêu thật sự có chiều sâu. Bạn thường dùng năng lượng tốt nhất khi có quyền kiểm soát nhịp tiến, hiểu rõ động cơ của mình và biết mình đang bảo vệ điều gì.",
+      strengths: [
+        "Có sức bền lớn với mục tiêu phức tạp hoặc cần đào sâu",
+        "Giữ ranh giới cá nhân chắc khi cảm thấy điều cốt lõi bị xâm phạm",
+      ],
+      challenges: [
+        "Có thể giữ căng thẳng quá lâu trước khi chia sẻ nhu cầu thật",
+        "Dễ nghi ngờ hoặc kiểm soát quá mức khi thiếu thông tin",
+      ],
+      developmentAdvice: [
+        "Biến cảm giác cần kiểm soát thành câu hỏi rõ để lấy thêm dữ kiện",
+        "Chọn một mức chia sẻ vừa đủ để người khác hiểu ranh giới của bạn",
+      ],
+    },
+    Sagittarius: {
+      summary:
+        "Sao Hỏa Nhân Mã thường hành động theo cảm hứng, lý tưởng và nhu cầu mở rộng đường đi. Bạn có xu hướng tiến mạnh khi mục tiêu có ý nghĩa lớn, cho phép học qua trải nghiệm và không bó quá chặt vào tiểu tiết.",
+      strengths: [
+        "Dám thử hướng mới khi thấy mục tiêu có ý nghĩa",
+        "Có năng lượng khích lệ người khác cùng tiến về phía trước",
+      ],
+      challenges: [
+        "Có thể bỏ qua chi tiết thực tế làm ảnh hưởng kế hoạch",
+        "Dễ phản ứng thẳng quá nhanh khi cảm thấy bị giới hạn",
+      ],
+      developmentAdvice: [
+        "Gắn tầm nhìn lớn với vài cam kết nhỏ có thể kiểm chứng",
+        "Chậm lại để phân biệt ranh giới hợp lý với cảm giác bị bó buộc",
+      ],
+    },
+    Capricorn: {
+      summary:
+        "Sao Hỏa Ma Kết thường hành động có chiến lược, kỷ luật và hướng tới kết quả bền. Bạn có xu hướng sử dụng năng lượng hiệu quả khi mục tiêu có thứ tự ưu tiên, trách nhiệm rõ và tiến trình được đo bằng thành quả cụ thể.",
+      strengths: [
+        "Bền bỉ theo đuổi mục tiêu dài hạn với nhịp chắc chắn",
+        "Biết dùng giới hạn, kế hoạch và trách nhiệm để bảo vệ năng lượng",
+      ],
+      challenges: [
+        "Có thể quá nghiêm với bản thân khi tiến độ chưa như mong muốn",
+        "Dễ xem nghỉ ngơi là trì hoãn dù cơ thể đã cần phục hồi",
+      ],
+      developmentAdvice: [
+        "Đưa thời gian nghỉ vào kế hoạch như một phần của hiệu suất",
+        "Ghi nhận các bước tiến nhỏ thay vì chỉ đo bằng kết quả cuối cùng",
+      ],
+    },
+    Aquarius: {
+      summary:
+        "Sao Hỏa Bảo Bình thường hành động độc lập, hướng hệ thống và dễ có động lực khi mục tiêu gắn với cải tiến. Bạn có xu hướng dùng năng lượng tốt khi được tự chọn phương pháp và khi việc mình làm đóng góp cho một hướng đi rộng hơn.",
+      strengths: [
+        "Dám thử cách khác biệt để tháo gỡ vấn đề cũ",
+        "Giữ lập trường tốt khi cần bảo vệ quyền tự chủ và nguyên tắc cá nhân",
+      ],
+      challenges: [
+        "Có thể trở nên xa cách khi người khác cần tín hiệu hợp tác cụ thể",
+        "Dễ cố chấp với ý tưởng nếu thấy nó hợp lý trên bình diện hệ thống",
+      ],
+      developmentAdvice: [
+        "Kết nối cải tiến với nhu cầu thực tế của những người liên quan",
+        "Nói rõ ranh giới tự do của bạn cùng với cam kết đóng góp cụ thể",
+      ],
+    },
+    Pisces: {
+      summary:
+        "Sao Hỏa Song Ngư thường hành động theo trực giác, cảm hứng và sự nhạy cảm với bối cảnh. Bạn có xu hướng dùng năng lượng tốt khi mục tiêu có ý nghĩa nhân văn, nghệ thuật hoặc tinh thần, và khi nhịp làm việc đủ mềm để cảm nhận đường đi.",
+      strengths: [
+        "Linh hoạt thích nghi khi hoàn cảnh cần sự mềm mại",
+        "Có động lực sâu khi hành động gắn với lòng trắc ẩn hoặc trí tưởng tượng",
+      ],
+      challenges: [
+        "Có thể khó bắt đầu khi mục tiêu quá mơ hồ hoặc ranh giới không rõ",
+        "Dễ hao năng lượng vì nhận quá nhiều tín hiệu và kỳ vọng xung quanh",
+      ],
+      developmentAdvice: [
+        "Chuyển cảm hứng thành một bước nhỏ có thời hạn rõ",
+        "Bảo vệ năng lượng bằng cách nói rõ điều bạn có thể và không thể nhận",
       ],
     },
   },

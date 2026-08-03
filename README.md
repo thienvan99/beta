@@ -1,6 +1,6 @@
 # Thiên Vận
 
-Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc, Sao Thủy và Sao Kim trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
+Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc, Sao Thủy, Sao Kim và Sao Hỏa trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
 
 ## Chạy dự án
 
@@ -85,13 +85,13 @@ Hai công cụ tham chiếu chỉ được chạy ngoài dự án để tạo fi
 
 ## Luận giải hành tinh cá nhân
 
-- `src/data/western-personal-planet-interpretations.ts` hiện chứa 24 quy tắc hành tinh cá nhân: 12 quy tắc Sao Thủy và 12 quy tắc Sao Kim trong 12 cung. Mỗi quy tắc có `ruleId`, `version`, `title`, `summary`, `strengths`, `challenges`, `developmentAdvice` và `evidence`.
-- `src/lib/western-personal-planet-interpretation.ts` chỉ đọc `WesternAstrologyResult`, lấy vị trí Mercury/Venus do calculation engine đã tính và chọn rule theo cung; không tự tính lại hành tinh và không mutate output calculation.
-- Giao diện “Hành tinh cá nhân” hiển thị Sao Thủy rồi Sao Kim, gồm cung, độ/phút, trạng thái thuận/nghịch hành, nội dung luận giải và phần evidence truy ngược được tới rule ID, version, body, sign và longitude.
-- Phase 2A còn lại: Mars × 12 cung là bước tiếp theo. Calculation engine vẫn không thay đổi.
+- `src/data/western-personal-planet-interpretations.ts` hiện chứa 36 quy tắc hành tinh cá nhân: 12 quy tắc Sao Thủy, 12 quy tắc Sao Kim và 12 quy tắc Sao Hỏa trong 12 cung. Mỗi quy tắc có `ruleId`, `version`, `title`, `summary`, `strengths`, `challenges`, `developmentAdvice` và `evidence`.
+- `src/lib/western-personal-planet-interpretation.ts` chỉ đọc `WesternAstrologyResult`, lấy vị trí Mercury/Venus/Mars do calculation engine đã tính và chọn rule theo cung; không tự tính lại hành tinh và không mutate output calculation.
+- Giao diện “Hành tinh cá nhân” hiển thị Sao Thủy, Sao Kim rồi Sao Hỏa, gồm cung, độ/phút, trạng thái thuận/nghịch hành, nội dung luận giải và phần evidence truy ngược được tới rule ID, version, body, sign và longitude.
+- Phase 2A Mercury, Venus và Mars trong 12 cung đã hoàn thành. Calculation engine vẫn không thay đổi.
 
 ## Phạm vi hiện tại
 
-Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi, luận giải Sao Thủy/Sao Kim trong 12 cung và persistence cục bộ cho bản nháp/hồ sơ sinh.
+Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi, luận giải Sao Thủy/Sao Kim/Sao Hỏa trong 12 cung và persistence cục bộ cho bản nháp/hồ sơ sinh.
 
-Trạng thái kiểm tra hiện tại: `npm test` đạt 109/109 test, `npm run lint` đạt và `npm run build` đạt. Sun/Moon/ASC đã hoàn thành 36 rules; Mercury hoàn thành 12 rules; Venus hoàn thành 12 rules; hệ thống hành tinh cá nhân hiện có 24 rules. Chưa luận Mars, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Bước phát triển tiếp theo là Mars × 12 cung. Calculation engine vẫn không thay đổi. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.
+Trạng thái kiểm tra hiện tại: `npm test` đạt 113/113 test, `npm run lint` đạt và `npm run build` đạt. Sun/Moon/ASC đã hoàn thành 36 rules; Mercury hoàn thành 12 rules; Venus hoàn thành 12 rules; Mars hoàn thành 12 rules; hệ thống hành tinh cá nhân hiện có 36 rules. Chưa luận Jupiter, Saturn, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Calculation engine vẫn không thay đổi. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.

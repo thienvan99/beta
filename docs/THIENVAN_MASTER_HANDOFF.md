@@ -53,7 +53,8 @@ Trạng thái: đang thực hiện.
 - Luận giải Phase 1 cho Sun, Moon, ASC: hoàn thành.
 - Luận giải Mercury trong 12 cung: hoàn thành.
 - Luận giải Venus trong 12 cung: hoàn thành.
-- Luận giải Mars và Phase 2B đến Phase 5: chưa hoàn thành.
+- Luận giải Mars trong 12 cung: hoàn thành.
+- Phase 2B đến Phase 5: chưa hoàn thành.
 
 ### Giai đoạn 3: Chiêm tinh Vệ Đà
 
@@ -98,7 +99,7 @@ Chi tiết giấy phép và độ chính xác nằm trong `README.md` và `docs/
 7. `calculateWesternAstrology` nhận giờ địa phương, UTC, latitude, longitude và timezone.
 8. `WesternAstrologyResult` được truyền sang bảng, SVG và interpretation engine.
 9. `interpretWesternCoreTriad` chỉ đọc Sun, Moon, ASC từ calculation result và chọn quy tắc phù hợp.
-10. `interpretWesternPersonalPlanets` chỉ đọc Mercury/Venus từ calculation result và chọn quy tắc phù hợp cho Sao Thủy/Sao Kim trong cung.
+10. `interpretWesternPersonalPlanets` chỉ đọc Mercury/Venus/Mars từ calculation result và chọn quy tắc phù hợp cho Sao Thủy/Sao Kim/Sao Hỏa trong cung.
 
 Không tính toán thiên văn hoặc viết công thức luận giải trực tiếp trong React component.
 
@@ -142,9 +143,9 @@ Các đường dẫn thật đã xác nhận:
 
 Các đường dẫn thật đã xác nhận:
 
-- `src/data/western-personal-planet-interpretations.ts`: file thêm mới, hiện chứa 24 quy tắc hành tinh cá nhân: 12 quy tắc Sao Thủy và 12 quy tắc Sao Kim trong 12 cung; được thiết kế để mở rộng Mars.
+- `src/data/western-personal-planet-interpretations.ts`: file thêm mới, hiện chứa 36 quy tắc hành tinh cá nhân: 12 quy tắc Sao Thủy, 12 quy tắc Sao Kim và 12 quy tắc Sao Hỏa trong 12 cung.
 - `src/lib/western-personal-planet-interpretation.ts`: file thêm mới, chọn rule personal planet từ `WesternAstrologyResult`, không tự tính lại hành tinh.
-- `src/lib/western-personal-planet-interpretation.test.ts`: file thêm mới, kiểm tra đủ 24 rule Mercury/Venus, ID, dữ liệu bắt buộc, chọn rule, deterministic, evidence và bất biến calculation.
+- `src/lib/western-personal-planet-interpretation.test.ts`: file thêm mới, kiểm tra đủ 36 rule Mercury/Venus/Mars, ID, dữ liệu bắt buộc, chọn rule, deterministic, evidence, lỗi thiếu body/rule và bất biến calculation.
 - `src/components/western-personal-planets.tsx`: file thêm mới, hiển thị mục “Hành tinh cá nhân” bên dưới bộ ba cốt lõi.
 - `src/components/result-tabs.tsx`: file có sẵn đã được cập nhật để tích hợp `WesternPersonalPlanets`.
 
@@ -222,20 +223,21 @@ Nguồn chi tiết và toàn bộ số liệu: `docs/WESTERN_VALIDATION.md`.
 - Không dùng AI, API mô hình ngôn ngữ hoặc văn bản ngẫu nhiên.
 - Calculation engine không bị sửa khi thêm Phase 1; test snapshot xác nhận interpretation không mutate result.
 
-## Interpretation engine Mercury và Venus đã hoàn thành
+## Interpretation engine Mercury, Venus và Mars đã hoàn thành
 
 - 12 rule Mercury trong 12 cung.
 - 12 rule Venus trong 12 cung.
-- Tổng cộng 24 rule hành tinh cá nhân.
+- 12 rule Mars trong 12 cung.
+- Tổng cộng 36 rule hành tinh cá nhân.
 - Schema gồm `ruleId`, `title`, `summary`, `strengths`, `challenges`, `developmentAdvice`, `evidence`, `version`.
-- Rule ID dạng `WESTERN-MERCURY-SIGN-V1` và `WESTERN-VENUS-SIGN-V1`.
+- Rule ID dạng `WESTERN-MERCURY-SIGN-V1`, `WESTERN-VENUS-SIGN-V1` và `WESTERN-MARS-SIGN-V1`.
 - Version hiện tại: `1.0.0`.
-- Evidence lưu body Mercury/Venus và sign; giao diện bổ sung kinh độ calculation thực tế.
-- Engine personal planets được viết để mở rộng Mars trong cùng file/kiến trúc; không tạo engine riêng cho Mercury hoặc Venus.
-- Có mục “Hành tinh cá nhân” trong giao diện, hiện hiển thị Sao Thủy rồi Sao Kim.
+- Evidence lưu body Mercury/Venus/Mars và sign; giao diện bổ sung kinh độ calculation thực tế.
+- Engine personal planets dùng chung cho Mercury, Venus và Mars; không tạo engine riêng cho Mars.
+- Có mục “Hành tinh cá nhân” trong giao diện, hiện hiển thị Sao Thủy, Sao Kim rồi Sao Hỏa.
 - Có nút “Vì sao có kết luận này?” hiển thị dữ liệu, cung, kinh độ, rule ID và version.
 - Không dùng AI, API mô hình ngôn ngữ hoặc văn bản ngẫu nhiên.
-- Calculation engine không bị sửa khi thêm Mercury/Venus; test xác nhận interpretation không mutate result.
+- Calculation engine không bị sửa khi thêm Mercury/Venus/Mars; test xác nhận interpretation không mutate result.
 
 ## Backlog luận giải Tây phương theo thứ tự bắt buộc
 
@@ -246,7 +248,8 @@ Nguồn chi tiết và toàn bộ số liệu: `docs/WESTERN_VALIDATION.md`.
 - Chưa luận nhà hoặc góc chiếu.
 - Mercury × 12 cung: hoàn thành.
 - Venus × 12 cung: hoàn thành.
-- Bước tiếp theo: Mars × 12 cung.
+- Mars × 12 cung: hoàn thành.
+- Phase 2A hoàn thành.
 
 ### Phase 2B: Jupiter, Saturn, Uranus, Neptune và Pluto trong 12 cung
 
@@ -334,29 +337,28 @@ Chủ dự án cần xác nhận:
 
 ## Trạng thái kiểm tra tại thời điểm bàn giao
 
-Kết quả đã chạy lại trong nhiệm vụ Venus × 12 cung ngày 2026-08-03:
+Kết quả đã chạy lại trong nhiệm vụ Mars × 12 cung ngày 2026-08-03:
 
-- `npm test`: 109/109 test đạt.
+- `npm test`: 113/113 test đạt.
 - `npm run lint`: đạt.
 - `npm run build`: đạt.
-- Kiểm tra trình duyệt gần nhất trên Chrome production build: Mercury vẫn hiển thị đúng, Venus hiển thị ngay sau Mercury, evidence của từng hành tinh mở riêng, không có lỗi console, không có hydration warning và không tràn ngang tại desktop hoặc viewport 390px.
+- Kiểm tra Chrome production build: Mercury, Venus và Mars hiển thị đúng thứ tự; evidence của ba hành tinh mở độc lập, có body, sign, longitude, rule ID và version; không có lỗi console, không có hydration warning và không tràn ngang tại desktop hoặc viewport 390px.
 
 ## Bước tiếp theo chính xác
 
-Phase 2A tiếp theo: luận Mars trong 12 cung.
+Phase 2A Mercury, Venus và Mars trong 12 cung đã hoàn thành.
 
-Phạm vi bước tiếp theo:
+Bước tiếp theo chỉ thực hiện khi được xác nhận riêng:
 
-- Thêm 12 rule Mars theo cung vào kiến trúc personal planets hiện có.
+- Phase 2B cho Jupiter, Saturn, Uranus, Neptune và Pluto trong 12 cung.
 - Dùng cùng schema và nguyên tắc văn phong của Phase 1.
 - Mỗi rule có ID, version và evidence.
-- Mở rộng UI và test hiện có; không tạo engine mới.
 - Không luận hành tinh trong nhà.
 - Không luận góc chiếu.
 - Không dùng AI.
 - Không thay đổi calculation engine.
 
-Sau Mars, Phase 2A hoàn tất tổng cộng 36 quy tắc hành tinh cá nhân. Không chuyển ngay sang 120 rule hành tinh trong nhà. Việc chia nhỏ giúp kiểm soát chất lượng nội dung và dành thời gian xử lý chính sách sát cusp trước Phase 3.
+Không chuyển ngay sang 120 rule hành tinh trong nhà. Việc chia nhỏ giúp kiểm soát chất lượng nội dung và dành thời gian xử lý chính sách sát cusp trước Phase 3.
 
 ## Lệnh vận hành
 
