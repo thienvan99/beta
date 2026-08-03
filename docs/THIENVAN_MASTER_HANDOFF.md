@@ -34,9 +34,12 @@ Mỗi hệ thống phải có calculation engine riêng, interpretation engine r
 
 Trạng thái: hoàn thành.
 
-- Form ngày, giờ, phút, nơi sinh, tọa độ và giới tính.
+- Form ngày, giờ, phút, tọa độ và giới tính; trường “Nơi sinh” đã được loại bỏ vì calculation hiện chỉ cần tọa độ.
 - Đọc tọa độ Google Maps DMS và thập phân.
 - Giới tính chỉ Nam/Nữ tương ứng `male`/`female`.
+- Bản nháp form sinh được lưu trong trình duyệt và tự khôi phục khi quay lại form hoặc tải lại trang.
+- Người dùng có thể lưu tối đa 10 hồ sơ sinh cục bộ, mở lại để điền form, xóa từng hồ sơ hoặc xóa tất cả.
+- Không gửi dữ liệu sinh đã lưu lên máy chủ, database hoặc tài khoản.
 - Nhận diện IANA timezone từ tọa độ.
 - Chuẩn hóa giờ địa phương, UTC offset tại thời điểm sinh và UTC.
 - Bốn tab kết quả cho bốn hệ thống.
@@ -86,14 +89,15 @@ Chi tiết giấy phép và độ chính xác nằm trong `README.md` và `docs/
 ## Luồng dữ liệu hiện tại
 
 1. Người dùng nhập dữ liệu sinh tại trang chủ.
-2. `src/lib/coordinates.ts` đọc DMS hoặc tọa độ thập phân.
-3. `/api/timezone` dùng `geo-tz/all` tại server để nhận diện IANA timezone.
-4. `src/lib/birth-time.ts` đổi giờ địa phương sang UTC bằng timezone IANA và quy tắc DST lịch sử.
-5. Trang kết quả xác thực search params và hiển thị dữ liệu chuẩn hóa.
-6. `calculateWesternAstrology` nhận giờ địa phương, UTC, latitude, longitude và timezone.
-7. `WesternAstrologyResult` được truyền sang bảng, SVG và interpretation engine.
-8. `interpretWesternCoreTriad` chỉ đọc Sun, Moon, ASC từ calculation result và chọn quy tắc phù hợp.
-9. `interpretWesternPersonalPlanets` chỉ đọc Mercury từ calculation result và chọn quy tắc phù hợp cho Sao Thủy trong cung.
+2. `src/lib/birth-profile-storage.ts` chỉ ở phía client lưu/khôi phục bản nháp và tối đa 10 hồ sơ sinh trong `localStorage`.
+3. `src/lib/coordinates.ts` đọc DMS hoặc tọa độ thập phân.
+4. `/api/timezone` dùng `geo-tz/all` tại server để nhận diện IANA timezone.
+5. `src/lib/birth-time.ts` đổi giờ địa phương sang UTC bằng timezone IANA và quy tắc DST lịch sử.
+6. Trang kết quả xác thực search params và hiển thị dữ liệu chuẩn hóa.
+7. `calculateWesternAstrology` nhận giờ địa phương, UTC, latitude, longitude và timezone.
+8. `WesternAstrologyResult` được truyền sang bảng, SVG và interpretation engine.
+9. `interpretWesternCoreTriad` chỉ đọc Sun, Moon, ASC từ calculation result và chọn quy tắc phù hợp.
+10. `interpretWesternPersonalPlanets` chỉ đọc Mercury từ calculation result và chọn quy tắc phù hợp cho Sao Thủy trong cung.
 
 Không tính toán thiên văn hoặc viết công thức luận giải trực tiếp trong React component.
 
@@ -104,6 +108,7 @@ Không tính toán thiên văn hoặc viết công thức luận giải trực t
 - `src/lib/coordinates.ts`
 - `src/lib/birth-data.ts`
 - `src/lib/birth-time.ts`
+- `src/lib/birth-profile-storage.ts`
 - `src/app/api/timezone/route.ts`
 - `src/components/birth-form.tsx`
 - `src/app/ket-qua/page.tsx`
@@ -326,12 +331,12 @@ Chủ dự án cần xác nhận:
 
 ## Trạng thái kiểm tra tại thời điểm bàn giao
 
-Kết quả đã chạy lại trong nhiệm vụ nghiệm thu Mercury ngày 2026-08-03:
+Kết quả đã chạy lại trong nhiệm vụ local birth profile persistence ngày 2026-08-03:
 
-- `npm test`: 93/93 test đạt.
+- `npm test`: 106/106 test đạt.
 - `npm run lint`: đạt.
 - `npm run build`: đạt.
-- Kiểm tra trình duyệt gần nhất: mục Sao Thủy hiển thị đúng, evidence mở được, không có lỗi console, không có hydration warning và không tràn ngang tại viewport 390px.
+- Kiểm tra trình duyệt gần nhất: form không còn trường “Nơi sinh”, dữ liệu bản nháp còn khi quay lại từ trang kết quả, hồ sơ đã lưu còn sau reload, có thể mở lại/xóa hồ sơ, không có lỗi console, không có hydration warning và không tràn ngang tại desktop hoặc viewport 390px.
 
 ## Bước tiếp theo chính xác
 

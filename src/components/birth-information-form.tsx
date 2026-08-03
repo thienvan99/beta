@@ -8,7 +8,13 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ClipboardList } from "lucide-react";
+import {
+  ArrowRight,
+  ClipboardList,
+  FolderOpen,
+  Save,
+  Trash2,
+} from "lucide-react";
 import {
   initialBirthData,
   isValidBirthData,
@@ -23,6 +29,19 @@ import {
   calculateBirthTime,
   isValidIanaTimeZone,
 } from "@/lib/birth-time";
+import {
+  birthProfileToDraft,
+  birthStorageVersion,
+  clearBirthProfiles,
+  deleteBirthProfile,
+  maximumBirthProfiles,
+  readBirthDraft,
+  readBirthProfiles,
+  saveBirthProfile,
+  writeBirthDraft,
+  type StoredBirthDraft,
+  type StoredBirthProfile,
+} from "@/lib/birth-profile-storage";
 import { parseCoordinates } from "@/lib/coordinates";
 
 const inputClassName =
@@ -33,6 +52,9 @@ const coordinateErrorMessage =
 
 const timeZoneLookupErrorMessage =
   "Không xác định được múi giờ từ tọa độ. Hãy nhập IANA timezone hợp lệ, ví dụ: Asia/Ho_Chi_Minh.";
+
+const privacyMessage =
+  "Thông tin sinh được lưu trên trình duyệt của thiết bị này và không được gửi lên máy chủ. Bạn có thể xóa bất kỳ lúc nào.";
 
 type FieldProps = {
   children: ReactNode;
@@ -47,6 +69,7 @@ type TextBirthField = Exclude<
 >;
 
 type TimeZoneStatus = "idle" | "loading" | "resolved" | "manual" | "error";
+type StorageMessage = Readonly<{ tone: "success" | "error"; text: string }>;
 
 function FormField({ children, error, htmlFor, label }: FieldProps) {
   return (
@@ -73,6 +96,11 @@ export function BirthInformationForm() {
   const [errors, setErrors] = useState<BirthErrors>({});
   const [coordinateInput, setCoordinateInput] = useState("");
   const [coordinateTouched, setCoordinateTouched] = useState(false);
+  const [draftReady, setDraftReady] = useState(false);
+  const [profileName, setProfileName] = useState("");
+  const [savedProfiles, setSavedProfiles] = useState<StoredBirthProfile[]>([]);
+  const [storageMessage, setStorageMessage] =
+    useState<StorageMessage | null>(null);
   const [timeZoneStatus, setTimeZoneStatus] =
     useState<TimeZoneStatus>("idle");
   const recognizedCoordinates = parseCoordinates(coordinateInput);
@@ -97,6 +125,62 @@ export function BirthInformationForm() {
       : values.timezone && !timeZoneIsValid
         ? "Múi giờ không hợp lệ. Hãy dùng IANA timezone, ví dụ: Asia/Ho_Chi_Minh."
         : undefined;
+
+  function applyDraft(draft: StoredBirthDraft) {
+    const coordinates = parseCoordinates(draft.coordinates);
+    manualTimeZoneRef.current = false;
+    setCoordinateInput(draft.coordinates);
+    setCoordinateTouched(false);
+    setValues({
+      ...initialBirthData,
+      birthDate: draft.birthDate,
+      hour: draft.hour,
+      minute: draft.minute,
+      latitude: coordinates ? String(coordinates.latitude) : "",
+      longitude: coordinates ? String(coordinates.longitude) : "",
+      timezone: "",
+      gender: draft.gender,
+    });
+    setErrors({});
+    setTimeZoneStatus(coordinates ? "loading" : "idle");
+  }
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      const draft = readBirthDraft();
+
+      if (draft) {
+        applyDraft(draft);
+      }
+
+      setSavedProfiles(readBirthProfiles());
+      setDraftReady(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!draftReady) {
+      return;
+    }
+
+    writeBirthDraft({
+      version: birthStorageVersion,
+      birthDate: values.birthDate,
+      hour: values.hour,
+      minute: values.minute,
+      coordinates: coordinateInput,
+      gender: values.gender,
+    });
+  }, [
+    coordinateInput,
+    draftReady,
+    values.birthDate,
+    values.gender,
+    values.hour,
+    values.minute,
+  ]);
 
   useEffect(() => {
     const coordinates = parseCoordinates(coordinateInput);
@@ -229,7 +313,6 @@ export function BirthInformationForm() {
         nextErrors.birthDate && "birthDate",
         nextErrors.hour && "hour",
         nextErrors.minute && "minute",
-        nextErrors.birthplace && "birthplace",
         (nextErrors.latitude || nextErrors.longitude) && "coordinates",
         nextErrors.timezone && "timezone",
         nextErrors.gender && "gender",
@@ -247,194 +330,409 @@ export function BirthInformationForm() {
     router.push(`/ket-qua?${params.toString()}`);
   }
 
+  function formatSavedAt(value: string) {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Không rõ thời điểm";
+    }
+
+    return new Intl.DateTimeFormat("vi-VN", {
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(date);
+  }
+
+  function handleSaveProfile() {
+    if (!recognizedCoordinates) {
+      setCoordinateTouched(true);
+      setStorageMessage({
+        tone: "error",
+        text: "Cần tọa độ hợp lệ trước khi lưu thông tin này.",
+      });
+      return;
+    }
+
+    const result = saveBirthProfile({
+      name: profileName,
+      birthDate: values.birthDate,
+      hour: values.hour,
+      minute: values.minute,
+      coordinates: coordinateInput,
+      gender: values.gender,
+    });
+
+    if (result.ok) {
+      setSavedProfiles(result.profiles);
+      setProfileName("");
+      setStorageMessage({
+        tone: "success",
+        text: `Đã lưu “${result.profile.name}”.`,
+      });
+      return;
+    }
+
+    if (result.reason === "limit") {
+      setStorageMessage({
+        tone: "error",
+        text: `Bạn đã lưu tối đa ${maximumBirthProfiles} hồ sơ. Hãy xóa một hồ sơ cũ trước khi lưu thêm.`,
+      });
+      return;
+    }
+
+    setStorageMessage({
+      tone: "error",
+      text:
+        result.reason === "storage-unavailable"
+          ? "Không thể truy cập bộ nhớ trình duyệt để lưu hồ sơ."
+          : "Hãy nhập tên gợi nhớ và hoàn tất ngày, giờ, phút, tọa độ, giới tính trước khi lưu.",
+    });
+  }
+
+  function handleOpenProfile(profile: StoredBirthProfile) {
+    applyDraft(birthProfileToDraft(profile));
+    setStorageMessage({
+      tone: "success",
+      text: `Đã mở “${profile.name}” vào form. Múi giờ sẽ được tính lại từ tọa độ.`,
+    });
+  }
+
+  function handleDeleteProfile(profile: StoredBirthProfile) {
+    const nextProfiles = deleteBirthProfile(profile.id);
+    setSavedProfiles(nextProfiles);
+    setStorageMessage({
+      tone: "success",
+      text: `Đã xóa “${profile.name}”.`,
+    });
+  }
+
+  function handleClearProfiles() {
+    if (
+      !window.confirm(
+        "Xóa tất cả thông tin sinh đã lưu trên trình duyệt này?",
+      )
+    ) {
+      return;
+    }
+
+    setSavedProfiles(clearBirthProfiles());
+    setStorageMessage({
+      tone: "success",
+      text: "Đã xóa tất cả hồ sơ đã lưu.",
+    });
+  }
+
   return (
-    <section
-      className="rounded-lg border border-[#d7dfdc] bg-white p-5 shadow-[0_18px_50px_rgba(31,55,53,0.08)] sm:p-7"
-      aria-labelledby="birth-form-title"
-    >
-      <div className="mb-7 flex items-center gap-3 border-b border-[#e1e6e4] pb-5">
-        <span className="flex size-10 items-center justify-center rounded-md bg-[#e5efec] text-[#1c6d68]">
-          <ClipboardList aria-hidden="true" size={20} />
-        </span>
-        <div>
-          <h2 id="birth-form-title" className="text-xl font-semibold text-[#193331]">
-            Thông tin sinh
-          </h2>
-          <p className="mt-0.5 text-sm text-[#6a7775]">Các trường có dấu * là bắt buộc</p>
+    <div className="space-y-6">
+      <section
+        className="rounded-lg border border-[#d7dfdc] bg-white p-5 shadow-[0_18px_50px_rgba(31,55,53,0.08)] sm:p-7"
+        aria-labelledby="birth-form-title"
+      >
+        <div className="mb-7 flex items-center gap-3 border-b border-[#e1e6e4] pb-5">
+          <span className="flex size-10 items-center justify-center rounded-md bg-[#e5efec] text-[#1c6d68]">
+            <ClipboardList aria-hidden="true" size={20} />
+          </span>
+          <div>
+            <h2 id="birth-form-title" className="text-xl font-semibold text-[#193331]">
+              Thông tin sinh
+            </h2>
+            <p className="mt-0.5 text-sm text-[#6a7775]">Các trường có dấu * là bắt buộc</p>
+          </div>
         </div>
-      </div>
 
-      <form noValidate onSubmit={handleSubmit}>
-        <div className="grid gap-x-4 sm:grid-cols-2">
-          <FormField
-            htmlFor="birthDate"
-            label="Ngày sinh"
-            error={errors.birthDate}
-          >
-            <input
-              {...fieldProps("birthDate")}
-              type="date"
-              required
-              className={inputClassName}
-            />
-          </FormField>
-
-          <div className="grid grid-cols-2 gap-3">
-            <FormField htmlFor="hour" label="Giờ sinh" error={errors.hour}>
-              <input
-                {...fieldProps("hour")}
-                type="number"
-                min="0"
-                max="23"
-                step="1"
-                inputMode="numeric"
-                placeholder="0–23"
-                required
-                className={inputClassName}
-              />
-            </FormField>
-
-            <FormField htmlFor="minute" label="Phút sinh" error={errors.minute}>
-              <input
-                {...fieldProps("minute")}
-                type="number"
-                min="0"
-                max="59"
-                step="1"
-                inputMode="numeric"
-                placeholder="0–59"
-                required
-                className={inputClassName}
-              />
-            </FormField>
-          </div>
-
-          <div className="sm:col-span-2">
+        <form noValidate onSubmit={handleSubmit}>
+          <div className="grid gap-x-4 sm:grid-cols-2">
             <FormField
-              htmlFor="birthplace"
-              label="Nơi sinh"
-              error={errors.birthplace}
+              htmlFor="birthDate"
+              label="Ngày sinh"
+              error={errors.birthDate}
             >
               <input
-                {...fieldProps("birthplace")}
-                type="text"
-                autoComplete="address-level2"
-                placeholder="Ví dụ: Hà Nội, Việt Nam"
+                {...fieldProps("birthDate")}
+                type="date"
                 required
                 className={inputClassName}
               />
             </FormField>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FormField htmlFor="hour" label="Giờ sinh" error={errors.hour}>
+                <input
+                  {...fieldProps("hour")}
+                  type="number"
+                  min="0"
+                  max="23"
+                  step="1"
+                  inputMode="numeric"
+                  placeholder="0–23"
+                  required
+                  className={inputClassName}
+                />
+              </FormField>
+
+              <FormField htmlFor="minute" label="Phút sinh" error={errors.minute}>
+                <input
+                  {...fieldProps("minute")}
+                  type="number"
+                  min="0"
+                  max="59"
+                  step="1"
+                  inputMode="numeric"
+                  placeholder="0–59"
+                  required
+                  className={inputClassName}
+                />
+              </FormField>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label htmlFor="coordinates" className="text-sm font-semibold text-[#2d4140]">
+                Tọa độ nơi sinh <span className="text-[#a94f2c]">*</span>
+              </label>
+              <input
+                id="coordinates"
+                name="coordinates"
+                type="text"
+                value={coordinateInput}
+                onChange={(event) => updateCoordinates(event.target.value)}
+                onBlur={() => setCoordinateTouched(true)}
+                placeholder={`14°21'45.9"N 108°00'23.7"E`}
+                required
+                spellCheck={false}
+                autoComplete="off"
+                aria-describedby="coordinates-feedback coordinates-error"
+                aria-invalid={Boolean(coordinateError)}
+                className={inputClassName}
+              />
+
+              <div id="coordinates-feedback" className="mt-2 min-h-24">
+                {recognizedCoordinates ? (
+                  <dl
+                    className="grid gap-x-4 gap-y-1 rounded-md border border-[#c7ddd6] bg-[#f0f7f5] px-3 py-2 text-sm text-[#315450] sm:grid-cols-2"
+                    aria-live="polite"
+                  >
+                    <div className="flex gap-1.5">
+                      <dt>Vĩ độ:</dt>
+                      <dd className="font-semibold">
+                        {recognizedCoordinates.latitude.toFixed(6)}
+                      </dd>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <dt>Kinh độ:</dt>
+                      <dd className="font-semibold">
+                        {recognizedCoordinates.longitude.toFixed(6)}
+                      </dd>
+                    </div>
+                    <div className="flex gap-1.5 sm:col-span-2">
+                      <dt>Múi giờ:</dt>
+                      <dd className="break-all font-semibold">
+                        {timeZoneStatus === "loading"
+                          ? "Đang nhận diện..."
+                          : values.timezone || "Chưa xác định"}
+                      </dd>
+                    </div>
+                    <div className="flex gap-1.5 sm:col-span-2">
+                      <dt>UTC offset tại ngày sinh:</dt>
+                      <dd className="font-semibold">
+                        {birthTime?.utcOffset ?? "Chờ ngày giờ sinh hợp lệ"}
+                      </dd>
+                    </div>
+                  </dl>
+                ) : null}
+              </div>
+              <p
+                id="coordinates-error"
+                className="mt-1.5 min-h-5 text-sm text-[#a23b2a]"
+                role={coordinateError ? "alert" : undefined}
+              >
+                {coordinateError ?? ""}
+              </p>
+            </div>
+
+            <FormField htmlFor="timezone" label="Múi giờ IANA" error={timeZoneError}>
+              <input
+                id="timezone"
+                name="timezone"
+                type="text"
+                value={values.timezone}
+                onChange={(event) => updateTimeZone(event.target.value)}
+                placeholder="Asia/Ho_Chi_Minh"
+                required
+                spellCheck={false}
+                autoComplete="off"
+                aria-busy={timeZoneStatus === "loading"}
+                aria-describedby="timezone-error"
+                aria-invalid={Boolean(timeZoneError)}
+                className={inputClassName}
+              />
+            </FormField>
+
+            <FormField htmlFor="gender" label="Giới tính" error={errors.gender}>
+              <select
+                id="gender"
+                name="gender"
+                value={values.gender}
+                onChange={(event) => updateGender(event.target.value as Gender | "")}
+                required
+                aria-describedby="gender-error"
+                aria-invalid={Boolean(errors.gender)}
+                className={inputClassName}
+              >
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            </FormField>
           </div>
 
-          <div className="sm:col-span-2">
-            <label htmlFor="coordinates" className="text-sm font-semibold text-[#2d4140]">
-              Tọa độ nơi sinh <span className="text-[#a94f2c]">*</span>
-            </label>
-            <input
-              id="coordinates"
-              name="coordinates"
-              type="text"
-              value={coordinateInput}
-              onChange={(event) => updateCoordinates(event.target.value)}
-              onBlur={() => setCoordinateTouched(true)}
-              placeholder={`14°21'45.9"N 108°00'23.7"E`}
-              required
-              spellCheck={false}
-              autoComplete="off"
-              aria-describedby="coordinates-feedback coordinates-error"
-              aria-invalid={Boolean(coordinateError)}
-              className={inputClassName}
-            />
+          <button
+            type="submit"
+            disabled={!recognizedCoordinates || !timeZoneIsValid}
+            className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-[#a94f2c] px-5 font-semibold text-white transition hover:bg-[#8f4024] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#a94f2c] active:translate-y-px disabled:cursor-not-allowed disabled:bg-[#aeb8b5] disabled:text-[#f5f7f6] disabled:hover:bg-[#aeb8b5] disabled:active:translate-y-0"
+          >
+            Lập lá số
+            <ArrowRight aria-hidden="true" size={19} />
+          </button>
+        </form>
+      </section>
 
-            <div id="coordinates-feedback" className="mt-2 min-h-24">
-              {recognizedCoordinates ? (
-                <dl
-                  className="grid gap-x-4 gap-y-1 rounded-md border border-[#c7ddd6] bg-[#f0f7f5] px-3 py-2 text-sm text-[#315450] sm:grid-cols-2"
-                  aria-live="polite"
-                >
-                  <div className="flex gap-1.5">
-                    <dt>Vĩ độ:</dt>
-                    <dd className="font-semibold">
-                      {recognizedCoordinates.latitude.toFixed(6)}
-                    </dd>
-                  </div>
-                  <div className="flex gap-1.5">
-                    <dt>Kinh độ:</dt>
-                    <dd className="font-semibold">
-                      {recognizedCoordinates.longitude.toFixed(6)}
-                    </dd>
-                  </div>
-                  <div className="flex gap-1.5 sm:col-span-2">
-                    <dt>Múi giờ:</dt>
-                    <dd className="break-all font-semibold">
-                      {timeZoneStatus === "loading"
-                        ? "Đang nhận diện..."
-                        : values.timezone || "Chưa xác định"}
-                    </dd>
-                  </div>
-                  <div className="flex gap-1.5 sm:col-span-2">
-                    <dt>UTC offset tại ngày sinh:</dt>
-                    <dd className="font-semibold">
-                      {birthTime?.utcOffset ?? "Chờ ngày giờ sinh hợp lệ"}
-                    </dd>
-                  </div>
-                </dl>
-              ) : null}
-            </div>
-            <p
-              id="coordinates-error"
-              className="mt-1.5 min-h-5 text-sm text-[#a23b2a]"
-              role={coordinateError ? "alert" : undefined}
+      <section
+        className="rounded-lg border border-[#d7dfdc] bg-white p-5 shadow-[0_18px_50px_rgba(31,55,53,0.06)] sm:p-7"
+        aria-labelledby="saved-profiles-title"
+      >
+        <div className="flex flex-col gap-3 border-b border-[#e1e6e4] pb-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2
+              id="saved-profiles-title"
+              className="text-xl font-semibold text-[#193331]"
             >
-              {coordinateError ?? ""}
+              Thông tin đã lưu
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-[#687673]">
+              {privacyMessage}
             </p>
           </div>
-
-          <FormField htmlFor="timezone" label="Múi giờ IANA" error={timeZoneError}>
-            <input
-              id="timezone"
-              name="timezone"
-              type="text"
-              value={values.timezone}
-              onChange={(event) => updateTimeZone(event.target.value)}
-              placeholder="Asia/Ho_Chi_Minh"
-              required
-              spellCheck={false}
-              autoComplete="off"
-              aria-busy={timeZoneStatus === "loading"}
-              aria-describedby="timezone-error"
-              aria-invalid={Boolean(timeZoneError)}
-              className={inputClassName}
-            />
-          </FormField>
-
-          <FormField htmlFor="gender" label="Giới tính" error={errors.gender}>
-            <select
-              id="gender"
-              name="gender"
-              value={values.gender}
-              onChange={(event) => updateGender(event.target.value as Gender | "")}
-              required
-              aria-describedby="gender-error"
-              aria-invalid={Boolean(errors.gender)}
-              className={inputClassName}
-            >
-              <option value="">Chọn giới tính</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-            </select>
-          </FormField>
+          <p className="text-sm font-medium text-[#687673]">
+            {savedProfiles.length}/{maximumBirthProfiles} hồ sơ
+          </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={!recognizedCoordinates || !timeZoneIsValid}
-          className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-[#a94f2c] px-5 font-semibold text-white transition hover:bg-[#8f4024] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#a94f2c] active:translate-y-px disabled:cursor-not-allowed disabled:bg-[#aeb8b5] disabled:text-[#f5f7f6] disabled:hover:bg-[#aeb8b5] disabled:active:translate-y-0"
-        >
-          Lập lá số
-          <ArrowRight aria-hidden="true" size={19} />
-        </button>
-      </form>
-    </section>
+        <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <label className="block">
+            <span className="text-sm font-semibold text-[#2d4140]">
+              Tên gợi nhớ
+            </span>
+            <input
+              id="profileName"
+              name="profileName"
+              type="text"
+              value={profileName}
+              onChange={(event) => setProfileName(event.target.value)}
+              placeholder="Ví dụ: Lá số của Anh"
+              className={inputClassName}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={handleSaveProfile}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#153433] px-4 text-sm font-semibold text-white transition hover:bg-[#214946] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#153433] sm:self-end"
+          >
+            <Save aria-hidden="true" size={17} />
+            Lưu thông tin này
+          </button>
+        </div>
+
+        {storageMessage ? (
+          <p
+            role="status"
+            className={`mt-3 rounded-md px-3 py-2 text-sm font-medium ${
+              storageMessage.tone === "success"
+                ? "bg-[#eef6f3] text-[#275a53]"
+                : "bg-[#fbebe6] text-[#9b3f27]"
+            }`}
+          >
+            {storageMessage.text}
+          </p>
+        ) : null}
+
+        <div className="mt-5">
+          {savedProfiles.length === 0 ? (
+            <p className="rounded-md border border-dashed border-[#cbd7d4] px-4 py-5 text-sm text-[#687673]">
+              Chưa có hồ sơ nào được lưu trên trình duyệt này.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleClearProfiles}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#c99f90] bg-white px-3 text-sm font-semibold text-[#9b3f27] transition hover:bg-[#fbebe6] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#9b3f27]"
+                >
+                  <Trash2 aria-hidden="true" size={16} />
+                  Xóa tất cả
+                </button>
+              </div>
+
+              <ul className="space-y-3">
+                {savedProfiles.map((profile) => (
+                  <li
+                    key={profile.id}
+                    className="rounded-lg border border-[#d7dfdc] bg-[#fbfcfb] p-4"
+                  >
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <h3 className="text-base font-semibold text-[#193331]">
+                          {profile.name}
+                        </h3>
+                        <dl className="mt-2 grid gap-x-5 gap-y-1 text-sm text-[#536562] sm:grid-cols-2">
+                          <div>
+                            <dt className="sr-only">Ngày sinh</dt>
+                            <dd>
+                              {profile.birthDate} · {profile.hour.padStart(2, "0")}:
+                              {profile.minute.padStart(2, "0")}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="sr-only">Giới tính</dt>
+                            <dd>{profile.gender === "male" ? "Nam" : "Nữ"}</dd>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <dt className="sr-only">Tọa độ</dt>
+                            <dd className="break-words">{profile.coordinates}</dd>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <dt className="sr-only">Thời điểm lưu</dt>
+                            <dd>Đã lưu: {formatSavedAt(profile.savedAt)}</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenProfile(profile)}
+                          className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#b9c8c4] bg-white px-3 text-sm font-semibold text-[#294542] transition hover:border-[#7f9691] hover:bg-[#f8faf9] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#1c6d68]"
+                        >
+                          <FolderOpen aria-hidden="true" size={16} />
+                          Mở lại
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteProfile(profile)}
+                          className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#c99f90] bg-white px-3 text-sm font-semibold text-[#9b3f27] transition hover:bg-[#fbebe6] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#9b3f27]"
+                        >
+                          <Trash2 aria-hidden="true" size={16} />
+                          Xóa
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }

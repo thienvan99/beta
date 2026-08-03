@@ -4,7 +4,6 @@ export const birthFields = [
   "birthDate",
   "hour",
   "minute",
-  "birthplace",
   "latitude",
   "longitude",
   "timezone",
@@ -18,7 +17,6 @@ export type BirthData = {
   birthDate: string;
   hour: string;
   minute: string;
-  birthplace: string;
   latitude: string;
   longitude: string;
   timezone: string;
@@ -39,7 +37,6 @@ export const initialBirthData: BirthDataDraft = {
   birthDate: "",
   hour: "",
   minute: "",
-  birthplace: "",
   latitude: "",
   longitude: "",
   timezone: "",

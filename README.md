@@ -1,6 +1,6 @@
 # Thiên Vận
 
-Giao diện nhập thông tin sinh, chuẩn hóa địa điểm và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc và Sao Thủy trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
+Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc và Sao Thủy trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
 
 ## Chạy dự án
 
@@ -21,6 +21,10 @@ npm run build
 
 ## Lựa chọn múi giờ và thời gian
 
+- Form không còn trường “Nơi sinh”. Tọa độ là dữ liệu địa lý bắt buộc và tiếp tục hỗ trợ cả số thập phân lẫn DMS.
+- Bản nháp gồm ngày sinh, giờ, phút, tọa độ và giới tính được lưu trong `localStorage` của trình duyệt với schema version riêng, rồi tự khôi phục khi người dùng quay lại form hoặc tải lại trang.
+- Người dùng có thể lưu tối đa 10 hồ sơ sinh cục bộ bằng tên gợi nhớ, mở lại để điền form hoặc xóa từng hồ sơ/xóa tất cả. Ứng dụng không tự lưu hồ sơ nếu người dùng chưa bấm “Lưu thông tin này”.
+- Dữ liệu sinh lưu cục bộ không được gửi lên máy chủ, API bên ngoài, database hoặc tài khoản. Khi mở lại bản nháp/hồ sơ, ứng dụng tính lại timezone, UTC offset và lá số từ dữ liệu sinh thay vì lưu kết quả calculation.
 - [`geo-tz`](https://github.com/evansiroky/node-geo-tz) 8.1.8, giấy phép MIT: tra cứu chính xác IANA timezone từ tọa độ. Dự án dùng entrypoint `geo-tz/all` với bộ dữ liệu comprehensive để giữ các định danh có lịch sử khác nhau trước năm 1970.
 - Dữ liệu ranh giới của `geo-tz` đến từ [`timezone-boundary-builder`](https://github.com/evansiroky/timezone-boundary-builder), được xây dựng chủ yếu từ OpenStreetMap và phát hành theo ODbL.
 - [`temporal-polyfill`](https://github.com/fullcalendar/temporal-polyfill) 1.0.2, giấy phép MIT: triển khai Temporal chuẩn để đổi thời gian địa phương sang UTC bằng IANA timezone và quy tắc DST lịch sử của môi trường chạy.
@@ -88,6 +92,6 @@ Hai công cụ tham chiếu chỉ được chạy ngoài dự án để tạo fi
 
 ## Phạm vi hiện tại
 
-Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi và luận giải Sao Thủy trong 12 cung.
+Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi, luận giải Sao Thủy trong 12 cung và persistence cục bộ cho bản nháp/hồ sơ sinh.
 
-Trạng thái kiểm tra hiện tại: `npm test` đạt 93/93 test, `npm run lint` đạt và `npm run build` đạt. Chưa luận Venus, Mars, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.
+Trạng thái kiểm tra hiện tại: `npm test` đạt 106/106 test, `npm run lint` đạt và `npm run build` đạt. Chưa luận Venus, Mars, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Bước phát triển tiếp theo vẫn là Venus × 12 cung, sau đó Mars × 12 cung. Calculation engine vẫn không thay đổi. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.

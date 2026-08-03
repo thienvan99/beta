@@ -28,9 +28,12 @@ Không được thu hẹp tài liệu hoặc kiến trúc thành dự án chỉ 
 
 ## Nền tảng dùng chung đã hoàn thành
 
-- Form nhập ngày sinh, giờ, phút, nơi sinh, tọa độ và giới tính.
+- Form nhập ngày sinh, giờ, phút, tọa độ và giới tính; trường “Nơi sinh” đã được loại bỏ vì calculation hiện chỉ cần tọa độ.
 - Đọc tọa độ Google Maps dạng độ-phút-giây (DMS), có hoặc không có dấu phẩy, và dạng số thập phân.
 - Giới tính chỉ nhận `male` hoặc `female`, hiển thị Nam hoặc Nữ.
+- Bản nháp form được lưu và khôi phục trong trình duyệt với schema version, gồm ngày sinh, giờ, phút, tọa độ và giới tính.
+- Người dùng có thể lưu tối đa 10 hồ sơ sinh cục bộ, mở lại để điền form, xóa từng hồ sơ hoặc xóa tất cả.
+- Không gửi dữ liệu sinh đã lưu lên máy chủ, database hoặc tài khoản. Timezone, UTC offset và kết quả calculation luôn được tính lại từ dữ liệu sinh khi mở lại.
 - Nhận diện IANA timezone từ tọa độ bằng `geo-tz/all` tại server.
 - Chuẩn hóa giờ địa phương, UTC offset tại đúng thời điểm sinh và thời gian UTC bằng `temporal-polyfill`.
 - Xử lý quy tắc DST lịch sử theo IANA timezone; không thay timezone bằng một UTC offset cố định.
@@ -129,12 +132,12 @@ Mercury × 12 cung đã hoàn thành:
 
 ## Trạng thái kiểm tra hiện tại
 
-Kết quả đã chạy lại trong nhiệm vụ nghiệm thu Mercury ngày 2026-08-03:
+Kết quả đã chạy lại trong nhiệm vụ local birth profile persistence ngày 2026-08-03:
 
-- `npm test`: 93/93 test đạt.
+- `npm test`: 106/106 test đạt.
 - `npm run lint`: đạt.
 - `npm run build`: đạt.
-- Kiểm tra trình duyệt gần nhất: mục Sao Thủy hiển thị đúng, evidence mở được, không có lỗi console, không có React hydration warning và không tràn ngang tại viewport 390px.
+- Kiểm tra trình duyệt gần nhất: form không còn trường “Nơi sinh”, dữ liệu bản nháp còn khi quay lại từ trang kết quả, hồ sơ đã lưu còn sau reload, có thể mở lại/xóa hồ sơ, không có lỗi console, không có React hydration warning và không tràn ngang tại desktop hoặc viewport 390px.
 
 ## Backlog luận giải Tây phương
 

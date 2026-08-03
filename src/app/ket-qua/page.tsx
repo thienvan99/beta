@@ -4,7 +4,6 @@ import {
   CalendarClock,
   Clock3,
   Globe2,
-  MapPin,
   Navigation,
   UserRound,
 } from "lucide-react";
@@ -97,7 +96,6 @@ export default async function ResultPage({
       value: localDateTime,
       icon: CalendarClock,
     },
-    { label: "Nơi sinh", value: birthData.birthplace, icon: MapPin },
     {
       label: "Tọa độ",
       value: `${formatCoordinate(birthData.latitude)}, ${formatCoordinate(birthData.longitude)}`,
@@ -159,7 +157,7 @@ export default async function ResultPage({
               <div
                 key={label}
                 className={
-                  label === "Nơi sinh" || label === "Thời gian UTC"
+                  label === "Thời gian UTC"
                     ? "lg:col-span-2"
                     : ""
                 }
