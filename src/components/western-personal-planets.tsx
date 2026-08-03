@@ -60,6 +60,10 @@ export function WesternPersonalPlanets({
     );
   }
 
+  const interpretedPlanetLabels = interpretation.positions
+    .map(({ label }) => label)
+    .join(", ");
+
   return (
     <section
       className="mt-6 border-t border-[#d7dfdc] pt-5"
@@ -74,7 +78,7 @@ export function WesternPersonalPlanets({
             Hành tinh cá nhân
           </h4>
           <p className="mt-1 text-sm text-[#687673]">
-            Sao Thủy trong Tropical Zodiac
+            {interpretedPlanetLabels} trong Tropical Zodiac
           </p>
         </div>
         <p className="text-sm text-[#687673]">Bộ quy tắc 1.0.0</p>

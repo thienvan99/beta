@@ -1,6 +1,6 @@
 # Thiên Vận
 
-Giao diện nhập thông tin sinh, chuẩn hóa địa điểm và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Phase 1 của hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng và Cung Mọc; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
+Giao diện nhập thông tin sinh, chuẩn hóa địa điểm và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc và Sao Thủy trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
 
 ## Chạy dự án
 
@@ -79,8 +79,15 @@ Hai công cụ tham chiếu chỉ được chạy ngoài dự án để tạo fi
 - Không dùng AI, API mô hình ngôn ngữ, nội dung ngẫu nhiên hoặc dịch vụ ngoài để tạo luận giải.
 - Nội dung được dùng cho mục đích tự quan sát và tham khảo, không phải kết luận khoa học, chẩn đoán hoặc sự xác định tuyệt đối về số phận.
 
+## Luận giải hành tinh cá nhân
+
+- `src/data/western-personal-planet-interpretations.ts` hiện chứa 12 quy tắc Sao Thủy trong 12 cung. Mỗi quy tắc có `ruleId`, `version`, `title`, `summary`, `strengths`, `challenges`, `developmentAdvice` và `evidence`.
+- `src/lib/western-personal-planet-interpretation.ts` chỉ đọc `WesternAstrologyResult`, lấy vị trí Sao Thủy do calculation engine đã tính và chọn rule theo cung; không tự tính lại hành tinh và không mutate output calculation.
+- Giao diện “Hành tinh cá nhân” hiển thị Sao Thủy, cung, độ/phút, trạng thái thuận/nghịch hành, nội dung luận giải và phần evidence truy ngược được tới rule ID, version, body, sign và longitude.
+- Phase 2A còn lại: Venus × 12 cung là bước tiếp theo, sau đó Mars × 12 cung. Calculation engine vẫn không thay đổi.
+
 ## Phạm vi hiện tại
 
-Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive và luận giải Phase 1 cho bộ ba cốt lõi.
+Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi và luận giải Sao Thủy trong 12 cung.
 
-Chưa luận hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.
+Trạng thái kiểm tra hiện tại: `npm test` đạt 93/93 test, `npm run lint` đạt và `npm run build` đạt. Chưa luận Venus, Mars, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.
