@@ -4,6 +4,7 @@ import { useState } from "react";
 import { majorAspectConfig } from "@/config/aspect-orbs";
 import { WesternChartWheel } from "@/components/western-chart-wheel";
 import { WesternCoreTriad } from "@/components/western-core-triad";
+import { WesternPersonalPlanets } from "@/components/western-personal-planets";
 import type { WesternAstrologyResult } from "@/lib/western-astrology";
 
 const tabs = [
@@ -82,6 +83,7 @@ function WesternAstrologyPanel({
       </div>
 
       <WesternCoreTriad result={result} />
+      <WesternPersonalPlanets result={result} />
 
       <section
         className="mt-6 border-t border-[#d7dfdc] pt-5"
