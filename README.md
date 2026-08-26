@@ -1,6 +1,6 @@
 # Thiên Vận
 
-Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc, Sao Thủy, Sao Kim và Sao Hỏa trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
+Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, cùng nền tảng tính toán Chiêm tinh Tây phương theo Tropical Zodiac và hệ nhà Placidus. Hệ thống luận giải hiện hỗ trợ bộ ba Mặt Trời, Mặt Trăng, Cung Mọc, Sao Thủy, Sao Kim, Sao Hỏa và Sao Mộc trong 12 cung; các hệ thống Bát Tự, Tử Vi và Chiêm tinh Vệ Đà chưa được triển khai.
 
 ## Chạy dự án
 
@@ -90,8 +90,15 @@ Hai công cụ tham chiếu chỉ được chạy ngoài dự án để tạo fi
 - Giao diện “Hành tinh cá nhân” hiển thị Sao Thủy, Sao Kim rồi Sao Hỏa, gồm cung, độ/phút, trạng thái thuận/nghịch hành, nội dung luận giải và phần evidence truy ngược được tới rule ID, version, body, sign và longitude.
 - Phase 2A Mercury, Venus và Mars trong 12 cung đã hoàn thành. Calculation engine vẫn không thay đổi.
 
+## Luận giải hành tinh xã hội
+
+- `src/data/western-social-planet-interpretations.ts` hiện chứa 12 quy tắc Sao Mộc trong 12 cung từ ruleset approved `western-jupiter-sign-v1`, version `1.0.0`. Mỗi quy tắc có `ruleId`, `version`, `title`, `summary`, `strengths`, `challenges`, `developmentAdvice` và `evidence`.
+- `src/lib/western-social-planet-interpretation.ts` chỉ đọc `WesternAstrologyResult`, lấy vị trí Jupiter do calculation engine đã tính và chọn rule theo cung; không tự tính lại Sao Mộc và không mutate output calculation.
+- Giao diện “Hành tinh xã hội” hiện chỉ hiển thị Sao Mộc, gồm cung, độ/phút, trạng thái thuận/nghịch hành, nội dung luận giải và phần evidence truy ngược được tới rule ID, version, body, sign, độ trong cung và longitude.
+- WA-P1-001 Jupiter trong 12 cung đã hoàn thành. Calculation engine vẫn không thay đổi.
+
 ## Phạm vi hiện tại
 
-Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi, luận giải Sao Thủy/Sao Kim/Sao Hỏa trong 12 cung và persistence cục bộ cho bản nháp/hồ sơ sinh.
+Đã có Julian Day, kinh độ Tropical, cung tiếng Việt, độ/phút và trạng thái nghịch hành cho Mặt Trời, Mặt Trăng, Sao Thủy, Sao Kim, Sao Hỏa, Sao Mộc, Sao Thổ, Thiên Vương, Hải Vương và Diêm Vương. Module cũng trả ASC, MC, 12 cusp Placidus, năm góc chiếu chính, vòng tròn lá số SVG responsive, luận giải Phase 1 cho bộ ba cốt lõi, luận giải Sao Thủy/Sao Kim/Sao Hỏa/Sao Mộc trong 12 cung và persistence cục bộ cho bản nháp/hồ sơ sinh.
 
-Trạng thái kiểm tra hiện tại: `npm test` đạt 113/113 test, `npm run lint` đạt và `npm run build` đạt. Sun/Moon/ASC đã hoàn thành 36 rules; Mercury hoàn thành 12 rules; Venus hoàn thành 12 rules; Mars hoàn thành 12 rules; hệ thống hành tinh cá nhân hiện có 36 rules. Chưa luận Jupiter, Saturn, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Calculation engine vẫn không thay đổi. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.
+Trạng thái kiểm tra hiện tại: `npm test` đạt 124/124 test, `npm run lint` đạt và `npm run build` đạt. Sun/Moon/ASC đã hoàn thành 36 rules; Mercury hoàn thành 12 rules; Venus hoàn thành 12 rules; Mars hoàn thành 12 rules; Jupiter hoàn thành 12 rules; hệ thống hành tinh cá nhân hiện có 36 rules và hành tinh xã hội hiện có 12 rules Sao Mộc. Chưa luận Saturn, Uranus, Neptune, Pluto, hành tinh trong nhà, góc chiếu hoặc các cấu hình nâng cao. Calculation engine vẫn không thay đổi. Chiêm tinh Vệ Đà, Bát Tự và Tử Vi chưa được triển khai. Swiss Ephemeris không được sử dụng.

@@ -12,6 +12,7 @@ import {
   saveBirthProfile,
   writeBirthDraft,
   type BirthProfileInput,
+  type StoredBirthDraft,
 } from "./birth-profile-storage";
 
 class MemoryStorage implements Pick<Storage, "getItem" | "setItem" | "removeItem"> {
@@ -30,7 +31,7 @@ class MemoryStorage implements Pick<Storage, "getItem" | "setItem" | "removeItem
   }
 }
 
-const completeDraft = {
+const completeDraft: StoredBirthDraft = {
   version: birthStorageVersion,
   birthDate: "1990-01-15",
   hour: "8",

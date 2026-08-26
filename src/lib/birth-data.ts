@@ -137,16 +137,6 @@ export function isValidBirthData(
   return Object.keys(validateBirthData(data)).length === 0;
 }
 
-export function toBirthDataSearchParams(data: BirthData) {
-  const params = new URLSearchParams();
-
-  for (const field of birthFields) {
-    params.set(field, data[field].trim());
-  }
-
-  return params;
-}
-
 export function formatBirthDate(value: string) {
   const date = new Date(`${value}T00:00:00.000Z`);
 

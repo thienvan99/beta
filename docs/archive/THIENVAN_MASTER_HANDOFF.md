@@ -2,7 +2,7 @@
 
 Cập nhật: 2026-08-03.
 
-Tài liệu này dùng để bàn giao repository `G:\thienvan` sang một cuộc trò chuyện Codex mới. Đây là dự án bốn hệ thống, không phải dự án chỉ riêng Chiêm tinh Tây phương.
+Tài liệu này dùng để bàn giao repository `<PROJECT_ROOT>` sang một cuộc trò chuyện Codex mới. Đây là dự án bốn hệ thống, không phải dự án chỉ riêng Chiêm tinh Tây phương.
 
 ## Cách bắt đầu trong cuộc trò chuyện mới
 
@@ -379,7 +379,7 @@ npm run build
 
 ## Checklist bàn giao cho cuộc trò chuyện mới
 
-- Xác nhận đang làm trong `G:\thienvan`.
+- Xác nhận đang làm trong `<PROJECT_ROOT>`.
 - Đọc năm tài liệu ở đầu file này.
 - Kiểm tra thay đổi hiện có trước khi sửa; không hoàn tác thay đổi không liên quan.
 - Không sửa calculation engine cho nhiệm vụ nội dung nếu đầu ra hiện tại đã đủ.

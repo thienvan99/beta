@@ -1,0 +1,1274 @@
+.explorer {
+  position: relative;
+  min-height: 560px;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(31, 55, 96, 0.2), transparent 36%),
+    #02050d;
+  color: #f5f7ff;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.scene::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(2, 5, 13, 0.5), transparent 26%),
+    radial-gradient(circle at center, transparent 48%, rgba(2, 5, 13, 0.46) 100%);
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  max-width: min(520px, calc(100% - 160px));
+  padding: clamp(18px, 3.5vw, 42px);
+  pointer-events: none;
+  text-shadow: 0 2px 24px #02050d;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  color: #c6d3e8;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.backLink:hover {
+  color: #ffffff;
+}
+
+.backLink:focus-visible,
+.controlButton:focus-visible,
+.closeButton:focus-visible,
+.overviewButton:focus-visible,
+.sourceLink:focus-visible,
+.planetButton:focus-visible,
+.speedRange:focus-visible,
+.timeControl button:focus-visible,
+.timeControl input:focus-visible,
+.timeControl select:focus-visible,
+.ephemerisSources a:focus-visible {
+  outline: 2px solid #f5c66c;
+  outline-offset: 3px;
+}
+
+.eyebrow {
+  margin: 18px 0 8px;
+  color: #e6b75f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.2rem);
+  font-weight: 590;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  color: #b8c7dd;
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  line-height: 1.5;
+}
+
+.controls {
+  position: absolute;
+  top: clamp(18px, 3vw, 34px);
+  right: clamp(16px, 3vw, 34px);
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid rgba(186, 205, 236, 0.18);
+  border-radius: 999px;
+  background: rgba(7, 13, 27, 0.72);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+}
+
+.speedControl {
+  position: absolute;
+  top: clamp(82px, 7vw, 96px);
+  right: clamp(16px, 3vw, 34px);
+  z-index: 4;
+  width: 218px;
+  padding: 11px 14px 10px;
+  border: 1px solid rgba(186, 205, 236, 0.16);
+  border-radius: 15px;
+  background: rgba(7, 13, 27, 0.72);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+}
+
+.speedLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #bdcbe0;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.speedLabel output {
+  color: #f4cf83;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.speedRange {
+  width: 100%;
+  height: 22px;
+  margin: 6px 0 0;
+  accent-color: #d6a851;
+  cursor: pointer;
+}
+
+.speedRange:disabled {
+  cursor: wait;
+  opacity: 0.45;
+}
+
+.speedScale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -1px;
+  color: #7589a6;
+  font-size: 0.6rem;
+}
+
+.timeControl {
+  position: absolute;
+  top: 183px;
+  right: clamp(16px, 3vw, 34px);
+  z-index: 4;
+  width: 218px;
+  padding: 11px 14px 12px;
+  border: 1px solid rgba(186, 205, 236, 0.16);
+  border-radius: 15px;
+  background: rgba(7, 13, 27, 0.76);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+}
+
+.timeHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #bdcbe0;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.timeHeading button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid rgba(229, 185, 100, 0.28);
+  border-radius: 999px;
+  background: rgba(229, 185, 100, 0.08);
+  color: #f1cf8e;
+  font: inherit;
+  cursor: pointer;
+}
+
+.timeHeading button:disabled,
+.timeControl input:disabled {
+  cursor: wait;
+  opacity: 0.45;
+}
+
+.timeFields {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.timeFields label,
+.timeZoneField {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: #8195b1;
+  font-size: 0.6rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.timeZoneField {
+  margin-top: 7px;
+}
+
+.timeControl input,
+.timeControl select {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 7px;
+  border: 1px solid rgba(186, 205, 236, 0.18);
+  border-radius: 8px;
+  background: rgba(2, 7, 17, 0.72);
+  color: #eef3fb;
+  color-scheme: dark;
+  font: 600 0.68rem/1 system-ui, sans-serif;
+}
+
+.utcTime,
+.timeError,
+.ephemerisSources {
+  margin: 8px 0 0;
+  font-size: 0.61rem;
+  line-height: 1.35;
+}
+
+.utcTime {
+  color: #8ea3bf;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeError {
+  color: #ffb1a6;
+}
+
+.ephemerisSources {
+  color: #879bb8;
+}
+
+.ephemerisSources a {
+  color: #a9bdd9;
+  text-underline-offset: 2px;
+}
+
+.ephemerisSources a:hover {
+  color: #dceaff;
+}
+
+.controlButton,
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #d6e0ef;
+  cursor: pointer;
+}
+
+.controlButton:hover,
+.controlButton[aria-pressed="true"],
+.closeButton:hover {
+  background: rgba(158, 186, 229, 0.14);
+  color: #ffffff;
+}
+
+.status,
+.error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(178, 202, 238, 0.2);
+  border-radius: 14px;
+  background: rgba(6, 11, 23, 0.86);
+  color: #dce5f3;
+  font-size: 0.95rem;
+  backdrop-filter: blur(12px);
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-top-color: #f1c56f;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.error {
+  width: min(420px, calc(100% - 32px));
+  align-items: flex-start;
+  color: #edf2fb;
+}
+
+.error strong {
+  display: block;
+}
+
+.error p {
+  margin: 5px 0 0;
+  color: #b8c7dc;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.infoPanel {
+  position: absolute;
+  left: clamp(16px, 2.6vw, 34px);
+  bottom: 82px;
+  z-index: 4;
+  width: min(370px, calc(100% - 32px));
+  max-height: calc(100svh - 215px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid rgba(180, 204, 238, 0.2);
+  border-radius: 20px;
+  background: rgba(5, 11, 24, 0.79);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px) saturate(125%);
+  scrollbar-width: thin;
+}
+
+.infoHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.infoOrder {
+  margin: 0 0 5px;
+  color: #e5b964;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.infoHeading h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.englishName {
+  margin: 4px 0 0;
+  color: #9eb0c8;
+  font-size: 0.92rem;
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  background: rgba(151, 176, 214, 0.08);
+}
+
+.summary {
+  margin: 15px 0 17px;
+  color: #d3ddec;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid rgba(180, 204, 238, 0.13);
+}
+
+.facts div {
+  min-width: 0;
+  padding: 12px 10px 11px 0;
+  border-bottom: 1px solid rgba(180, 204, 238, 0.13);
+}
+
+.facts dt {
+  margin-bottom: 4px;
+  color: #91a5c1;
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.facts dd {
+  margin: 0;
+  color: #f3f6fb;
+  font-size: 0.87rem;
+  line-height: 1.38;
+}
+
+.infoActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.overviewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(229, 185, 100, 0.36);
+  border-radius: 999px;
+  background: rgba(229, 185, 100, 0.11);
+  color: #f7dda9;
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.overviewButton:hover {
+  background: rgba(229, 185, 100, 0.18);
+}
+
+.sourceLink {
+  color: #adbed5;
+  font-size: 0.78rem;
+  text-align: right;
+  text-underline-offset: 3px;
+}
+
+.sourceLink:hover {
+  color: #ffffff;
+}
+
+.planetRail {
+  position: absolute;
+  right: clamp(16px, 2.6vw, 34px);
+  bottom: 18px;
+  z-index: 4;
+  display: flex;
+  gap: 5px;
+  width: min(860px, calc(100% - 430px));
+  overflow-x: auto;
+  padding: 6px;
+  border: 1px solid rgba(186, 205, 236, 0.18);
+  border-radius: 16px;
+  background: rgba(6, 12, 25, 0.72);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(14px);
+  scrollbar-width: none;
+}
+
+.planetRail::-webkit-scrollbar {
+  display: none;
+}
+
+.planetButton {
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #b9c7da;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.planetButton:hover,
+.planetButton[data-active] {
+  background: rgba(151, 181, 225, 0.13);
+  color: #ffffff;
+}
+
+.planetButton[data-active] {
+  box-shadow: inset 0 0 0 1px rgba(229, 185, 100, 0.52);
+}
+
+.planetDot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #89909b;
+  box-shadow: 0 0 9px currentColor;
+}
+
+.planetDot[data-planet="venus"] { background: #d5a15e; }
+.planetDot[data-planet="earth"] { background: #4d9fdd; }
+.planetDot[data-planet="mars"] { background: #bd5b3a; }
+.planetDot[data-planet="jupiter"] { background: #c59d78; }
+.planetDot[data-planet="saturn"] { background: #d8c187; }
+.planetDot[data-planet="uranus"] { background: #8ad1d6; }
+.planetDot[data-planet="neptune"] { background: #397dcc; }
+
+.guide {
+  position: absolute;
+  right: clamp(18px, 3vw, 38px);
+  bottom: 86px;
+  z-index: 2;
+  display: flex;
+  gap: 18px;
+  color: #7f92ae;
+  font-size: 0.72rem;
+  pointer-events: none;
+}
+
+.simulationNote {
+  position: absolute;
+  left: clamp(18px, 3vw, 38px);
+  bottom: 25px;
+  z-index: 2;
+  width: min(350px, calc(100% - 36px));
+  margin: 0;
+  color: #7588a4;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.birthObserverEntry {
+  position: absolute;
+  left: clamp(18px, 3vw, 38px);
+  bottom: 88px;
+  z-index: 4;
+  width: min(380px, calc(100% - 36px));
+  padding: 16px 18px;
+  border: 1px solid rgba(126, 192, 187, 0.34);
+  border-radius: 18px;
+  background: rgba(5, 17, 28, 0.88);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+}
+
+.birthObserverEntryEyebrow {
+  margin: 0 0 5px;
+  color: #80c9c2;
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.birthObserverEntry h2,
+.birthTransition h2,
+.observerUnavailable h2 {
+  margin: 0;
+  color: #f7fbff;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.birthObserverEntry p,
+.birthTransition p,
+.observerUnavailable p {
+  margin: 8px 0 0;
+  color: #bdcadb;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.birthObserverEntry a {
+  color: #f4cf83;
+  font-weight: 700;
+}
+
+.birthObserverEntry button,
+.birthTransition button,
+.observerUnavailable button,
+.observerExit {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0 15px;
+  border: 1px solid rgba(126, 192, 187, 0.48);
+  border-radius: 10px;
+  background: #1d6864;
+  color: #ffffff;
+  font: 700 0.88rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.birthObserverEntry button:hover,
+.birthTransition button:hover,
+.observerUnavailable button:hover,
+.observerExit:hover {
+  background: #287a75;
+}
+
+.birthObserverEntry button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.birthObserverError {
+  color: #ffb1a6 !important;
+}
+
+.birthTransition,
+.observerUnavailable {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background: rgba(3, 8, 16, 0.76);
+  text-align: left;
+  backdrop-filter: blur(5px);
+}
+
+.birthTransition > div,
+.observerUnavailable > div {
+  max-width: 520px;
+}
+
+.observerUnavailable > svg {
+  flex: 0 0 auto;
+  color: #f4cf83;
+}
+
+.observerView {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: clamp(14px, 3vw, 34px);
+  background:
+    radial-gradient(circle at 50% 28%, rgba(32, 98, 111, 0.28), transparent 38%),
+    linear-gradient(180deg, #07131d, #091b25 58%, #0d252a);
+  color: #eff7f8;
+  outline: none;
+}
+
+.observerShell {
+  width: min(1180px, 100%);
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.observerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.observerHeader > div {
+  max-width: 720px;
+}
+
+.observerEyebrow {
+  margin: 0 0 8px;
+  color: #8bd4cc;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.observerHeader h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 3.4vw, 2.8rem);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+
+.observerHeader p:not(.observerEyebrow) {
+  margin: 11px 0 0;
+  color: #c2d0d5;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.observerExit {
+  flex: 0 0 auto;
+  margin-top: 0;
+  background: rgba(20, 76, 78, 0.84);
+}
+
+.observerGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.04fr) minmax(320px, 0.96fr);
+  gap: clamp(18px, 3vw, 38px);
+  align-items: start;
+  margin-top: clamp(20px, 3vw, 34px);
+}
+
+.skyDome {
+  min-width: 0;
+  margin: 0;
+  padding: clamp(12px, 2vw, 22px);
+  border: 1px solid rgba(143, 199, 198, 0.25);
+  border-radius: 24px;
+  background: rgba(4, 18, 27, 0.66);
+}
+
+.skyDome svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(62svh, 650px);
+  aspect-ratio: 1;
+  overflow: visible;
+}
+
+.skyDomeFill {
+  fill: rgba(18, 62, 76, 0.58);
+}
+
+.skyHorizon {
+  fill: none;
+  stroke: #d8b86f;
+  stroke-width: 0.75;
+}
+
+.skyAltitudeRing,
+.skyAxis {
+  fill: none;
+  stroke: rgba(193, 218, 222, 0.3);
+  stroke-width: 0.35;
+  stroke-dasharray: 1.3 1.3;
+}
+
+.skyZenith {
+  fill: #d8b86f;
+}
+
+.skyDirection {
+  fill: #f5d48e;
+  font-size: 3.1px;
+  font-weight: 750;
+}
+
+.skyZenithLabel {
+  fill: #abc5ca;
+  font-size: 2.3px;
+  font-weight: 650;
+}
+
+.skyBody circle {
+  fill: #eef9ff;
+  stroke: #2c7776;
+  stroke-width: 0.8;
+}
+
+.skyBody text {
+  fill: #082027;
+  font-size: 4px;
+  font-weight: 800;
+}
+
+.skyDome figcaption {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 9px;
+  color: #a9bdc3;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.skyDome figcaption svg {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+
+.observerSummary {
+  min-width: 0;
+}
+
+.observerSummary h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.horizonCount {
+  margin: 8px 0 0;
+  color: #bdd0d4;
+  font-size: 0.95rem;
+}
+
+.horizonCount strong {
+  color: #ffffff;
+}
+
+.horizonList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.horizonList li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 2px 7px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(139, 196, 194, 0.2);
+  border-radius: 11px;
+  background: rgba(12, 38, 47, 0.66);
+  color: #eaf4f5;
+  font-size: 0.85rem;
+}
+
+.horizonList li > span:first-child {
+  grid-row: 1 / span 2;
+  color: #f0d28f;
+  font-size: 1.15rem;
+}
+
+.horizonList li > span:nth-child(2) {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.horizonList li strong {
+  color: #99d7c9;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.horizonList li[data-above-horizon="false"] strong {
+  color: #d5bdbe;
+}
+
+.observerDetails {
+  margin-top: 16px;
+  border: 1px solid rgba(139, 196, 194, 0.24);
+  border-radius: 13px;
+  background: rgba(5, 25, 34, 0.68);
+}
+
+.observerDetails summary {
+  min-height: 44px;
+  padding: 12px 14px;
+  color: #eef7f7;
+  font-size: 0.9rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.observerDetails[open] summary {
+  border-bottom: 1px solid rgba(139, 196, 194, 0.2);
+}
+
+.observerMetadata {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 14px;
+}
+
+.observerMetadata div {
+  min-width: 0;
+}
+
+.observerMetadata dt {
+  color: #8caeb2;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.observerMetadata dd {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  color: #e1edef;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.observerTableScroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 14px 14px;
+  border-radius: 9px;
+}
+
+.observerTable {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  color: #dcebed;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.observerTable caption {
+  padding: 8px;
+  color: #9db7bb;
+  text-align: left;
+}
+
+.observerTable th,
+.observerTable td {
+  padding: 8px;
+  border-block: 1px solid rgba(147, 193, 194, 0.14);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.observerTable thead th {
+  color: #9ec4c3;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.observerNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 14px 0 0;
+  color: #b7c9cd;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.observerNotice svg {
+  margin-top: 2px;
+  flex: 0 0 auto;
+  color: #e6c77f;
+}
+
+.birthObserverEntry button:focus-visible,
+.birthObserverEntry a:focus-visible,
+.birthTransition button:focus-visible,
+.observerUnavailable button:focus-visible,
+.observerExit:focus-visible,
+.observerDetails summary:focus-visible,
+.observerTableScroll:focus-visible {
+  outline: 3px solid #f5c66c;
+  outline-offset: 3px;
+}
+
+.infoPanel + .planetRail ~ .simulationNote {
+  display: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .planetRail {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+
+  .infoPanel {
+    bottom: 80px;
+  }
+
+  .guide,
+  .simulationNote {
+    display: none;
+  }
+
+  .observerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .skyDome svg {
+    max-height: 560px;
+  }
+}
+
+@media (max-width: 640px) {
+  .explorer {
+    min-height: 620px;
+  }
+
+  .header {
+    max-width: calc(100% - 72px);
+    padding: 14px 16px;
+  }
+
+  .backLink {
+    min-height: 34px;
+    font-size: 0.8rem;
+  }
+
+  .eyebrow {
+    margin-top: 11px;
+    font-size: 0.62rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    margin-top: 7px;
+    font-size: 0.86rem;
+  }
+
+  .controls {
+    top: 14px;
+    right: 12px;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: 18px;
+    padding: 4px;
+  }
+
+  .speedControl {
+    top: 204px;
+    right: 12px;
+    width: 154px;
+    padding: 9px 11px 8px;
+  }
+
+  .timeControl {
+    top: 204px;
+    right: auto;
+    left: 12px;
+    width: 166px;
+    padding: 9px 10px 10px;
+  }
+
+  .timeHeading {
+    font-size: 0.64rem;
+  }
+
+  .timeHeading button {
+    min-height: 27px;
+    padding: 0 7px;
+  }
+
+  .timeFields {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 7px;
+  }
+
+  .timeZoneField {
+    margin-top: 6px;
+  }
+
+  .timeControl input,
+  .timeControl select {
+    height: 30px;
+    font-size: 0.64rem;
+  }
+
+  .speedLabel {
+    font-size: 0.64rem;
+  }
+
+  .speedLabel span {
+    max-width: 76px;
+    line-height: 1.2;
+  }
+
+  .controlButton {
+    width: 42px;
+    height: 42px;
+  }
+
+  .infoPanel {
+    left: 12px;
+    bottom: 74px;
+    width: calc(100% - 24px);
+    max-height: 39svh;
+    padding: 16px;
+    border-radius: 17px;
+  }
+
+  .infoHeading h2 {
+    font-size: 1.45rem;
+  }
+
+  .summary {
+    margin: 11px 0 12px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .facts div {
+    padding: 9px 8px 8px 0;
+  }
+
+  .facts dd {
+    font-size: 0.8rem;
+  }
+
+  .infoActions {
+    margin-top: 12px;
+  }
+
+  .planetRail {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .planetButton {
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+
+  .birthObserverEntry {
+    left: 12px;
+    bottom: 74px;
+    width: calc(100% - 24px);
+    padding: 14px;
+  }
+
+  .birthObserverEntry p {
+    font-size: 1rem;
+  }
+
+  .birthTransition,
+  .observerUnavailable {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .observerView {
+    padding: 12px;
+  }
+
+  .observerHeader {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .observerHeader p:not(.observerEyebrow) {
+    font-size: 1rem;
+  }
+
+  .observerExit {
+    width: 100%;
+  }
+
+  .observerGrid {
+    margin-top: 16px;
+  }
+
+  .skyDome {
+    padding: 10px;
+    border-radius: 17px;
+  }
+
+  .skyDome svg {
+    max-height: none;
+  }
+
+  .skyDome figcaption,
+  .horizonCount,
+  .observerDetails summary {
+    font-size: 1rem;
+  }
+
+  .horizonList {
+    grid-template-columns: 1fr;
+  }
+
+  .horizonList li {
+    min-height: 52px;
+    font-size: 1rem;
+  }
+
+  .horizonList li strong {
+    font-size: 0.82rem;
+  }
+
+  .observerNotice,
+  .observerMetadata dd {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-height: 680px) and (min-width: 641px) {
+  .header {
+    padding-top: 16px;
+  }
+
+  .eyebrow {
+    margin-top: 10px;
+  }
+
+  .subtitle {
+    display: none;
+  }
+
+  .infoPanel {
+    max-height: calc(100svh - 125px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation: none;
+  }
+
+  .controlButton,
+  .planetButton,
+  .overviewButton,
+  .observerExit,
+  .birthObserverEntry button {
+    scroll-behavior: auto;
+  }
+}

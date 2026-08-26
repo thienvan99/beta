@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
 
 # next.js
 /.next/
@@ -30,6 +33,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .codex-dev*.log
+/.codex-*.log
+/debug.log
+
+# provider payloads pending owner review
+/benchmarks/geoapify-place-search-observations.json
 
 # env files (can opt-in for committing if needed)
 .env*

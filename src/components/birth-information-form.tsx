@@ -18,13 +18,14 @@ import {
 import {
   initialBirthData,
   isValidBirthData,
-  toBirthDataSearchParams,
   validateBirthData,
   type BirthDataDraft,
   type BirthErrors,
   type BirthField,
   type Gender,
 } from "@/lib/birth-data";
+import { writeActiveBirthSession } from "@/lib/active-birth-session";
+import { getResultModulePath } from "@/lib/result-modules";
 import {
   calculateBirthTime,
   isValidIanaTimeZone,
@@ -55,6 +56,10 @@ const timeZoneLookupErrorMessage =
 
 const privacyMessage =
   "Thông tin sinh được lưu trên trình duyệt của thiết bị này và không được gửi lên máy chủ. Bạn có thể xóa bất kỳ lúc nào.";
+
+const coordinateHelpId = "coordinates-help";
+const coordinateFeedbackId = "coordinates-feedback";
+const coordinateErrorId = "coordinates-error";
 
 type FieldProps = {
   children: ReactNode;
@@ -326,8 +331,15 @@ export function BirthInformationForm() {
       return;
     }
 
-    const params = toBirthDataSearchParams(submissionValues);
-    router.push(`/ket-qua?${params.toString()}`);
+    if (!writeActiveBirthSession(submissionValues)) {
+      setStorageMessage({
+        tone: "error",
+        text: "Không thể mở kết quả trong phiên này. Hãy kiểm tra quyền lưu trữ của trình duyệt rồi thử lại.",
+      });
+      return;
+    }
+
+    router.push(getResultModulePath("bat-tu"));
   }
 
   function formatSavedAt(value: string) {
@@ -500,12 +512,48 @@ export function BirthInformationForm() {
                 required
                 spellCheck={false}
                 autoComplete="off"
-                aria-describedby="coordinates-feedback coordinates-error"
+                aria-describedby={`${coordinateHelpId} ${coordinateFeedbackId} ${coordinateErrorId}`}
                 aria-invalid={Boolean(coordinateError)}
                 className={inputClassName}
               />
 
-              <div id="coordinates-feedback" className="mt-2 min-h-24">
+              <div
+                id={coordinateHelpId}
+                className="mt-3 rounded-md border border-[#d7dfdc] bg-[#f8faf9] p-3 text-sm leading-6 text-[#536562]"
+              >
+                <p className="font-semibold text-[#294542]">
+                  Có thể nhập một trong hai cách:
+                </p>
+                <ul className="mt-2 space-y-1">
+                  <li>
+                    Thập phân:{" "}
+                    <code className="break-all rounded bg-white px-1.5 py-0.5 text-[#193331]">
+                      10.8231, 106.6297
+                    </code>
+                  </li>
+                  <li>
+                    DMS:{" "}
+                    <code className="break-all rounded bg-white px-1.5 py-0.5 text-[#193331]">
+                      {`14°21'45.9"N 108°00'23.7"E`}
+                    </code>
+                  </li>
+                </ul>
+                <p className="mt-2">
+                  Ký hiệu: N = Bắc, S = Nam, E = Đông, W = Tây.
+                </p>
+                <details className="mt-2">
+                  <summary className="cursor-pointer font-semibold text-[#1c6d68] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#1c6d68]">
+                    Cách sao chép tọa độ từ Google Maps
+                  </summary>
+                  <ol className="mt-2 list-decimal space-y-1 pl-5">
+                    <li>Mở Google Maps và chọn đúng nơi sinh.</li>
+                    <li>Nhấn hoặc giữ vào vị trí trên bản đồ để hiện ghim.</li>
+                    <li>Sao chép dãy số tọa độ, rồi dán vào ô này.</li>
+                  </ol>
+                </details>
+              </div>
+
+              <div id={coordinateFeedbackId} className="mt-2 min-h-24">
                 {recognizedCoordinates ? (
                   <dl
                     className="grid gap-x-4 gap-y-1 rounded-md border border-[#c7ddd6] bg-[#f0f7f5] px-3 py-2 text-sm text-[#315450] sm:grid-cols-2"
@@ -541,7 +589,7 @@ export function BirthInformationForm() {
                 ) : null}
               </div>
               <p
-                id="coordinates-error"
+                id={coordinateErrorId}
                 className="mt-1.5 min-h-5 text-sm text-[#a23b2a]"
                 role={coordinateError ? "alert" : undefined}
               >

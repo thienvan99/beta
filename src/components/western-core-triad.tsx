@@ -7,6 +7,10 @@ import {
   WesternInterpretationError,
   interpretWesternCoreTriad,
 } from "@/lib/western-interpretation";
+import {
+  formatWesternBodyTerm,
+  formatZodiacSignTerm,
+} from "@/lib/western-terminology";
 
 type WesternCoreTriadProps = {
   result: WesternAstrologyResult;
@@ -63,10 +67,10 @@ export function WesternCoreTriad({ result }: WesternCoreTriadProps) {
       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
         <div>
           <h4 id="core-triad-title" className="text-base font-semibold text-[#193331]">
-            Bộ ba cốt lõi
+            Nền tảng cốt lõi
           </h4>
           <p className="mt-1 text-sm text-[#687673]">
-            Mặt Trời, Mặt Trăng và Cung Mọc trong Tropical Zodiac
+            Các chỉ báo nền về bản sắc, cảm xúc và cách thể hiện ra bên ngoài.
           </p>
         </div>
         <p className="text-sm text-[#687673]">Bộ quy tắc 1.0.0</p>
@@ -87,7 +91,8 @@ export function WesternCoreTriad({ result }: WesternCoreTriadProps) {
                   {position.role}
                 </p>
                 <h5 className="mt-2 text-lg font-semibold text-[#193331]">
-                  {position.label}: {position.signVietnamese}
+                  {formatWesternBodyTerm(position.factor)} ở{" "}
+                  {formatZodiacSignTerm(position.sign)}
                 </h5>
                 <p className="mt-1 text-sm tabular-nums text-[#586b68]">
                   {position.degree}° {String(position.minute).padStart(2, "0")}′

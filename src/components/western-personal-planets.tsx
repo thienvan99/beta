@@ -7,6 +7,10 @@ import {
   WesternPersonalPlanetInterpretationError,
   interpretWesternPersonalPlanets,
 } from "@/lib/western-personal-planet-interpretation";
+import {
+  formatWesternBodyTerm,
+  formatZodiacSignTerm,
+} from "@/lib/western-terminology";
 
 type WesternPersonalPlanetsProps = {
   result: WesternAstrologyResult;
@@ -62,10 +66,6 @@ export function WesternPersonalPlanets({
     );
   }
 
-  const interpretedPlanetLabels = interpretation.positions
-    .map(({ label }) => label)
-    .join(", ");
-
   return (
     <section
       className="mt-6 border-t border-[#d7dfdc] pt-5"
@@ -80,7 +80,7 @@ export function WesternPersonalPlanets({
             Hành tinh cá nhân
           </h4>
           <p className="mt-1 text-sm text-[#687673]">
-            {interpretedPlanetLabels} trong Tropical Zodiac
+            Cách suy nghĩ và giao tiếp, gắn kết và giá trị, hành động và động lực.
           </p>
         </div>
         <p className="text-sm text-[#687673]">Bộ quy tắc 1.0.0</p>
@@ -102,7 +102,8 @@ export function WesternPersonalPlanets({
                 </p>
                 <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                   <h5 className="text-lg font-semibold text-[#193331]">
-                    {position.label}: {position.signVietnamese}
+                    {formatWesternBodyTerm(position.factor)} ở{" "}
+                    {formatZodiacSignTerm(position.sign)}
                   </h5>
                   <p className="text-sm font-medium text-[#627370]">
                     {position.retrograde ? "Nghịch hành" : "Thuận hành"}

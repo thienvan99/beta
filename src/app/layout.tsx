@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { siteOrigin } from "../config/site-url";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteOrigin),
   title: "Thiên Vận | Hồ sơ sinh",
   description: "Nhập thông tin sinh và khởi tạo hồ sơ Thiên Vận.",
 };
