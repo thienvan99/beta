@@ -17,6 +17,11 @@
 
 ## Phạm vi đã chọn
 
+Đã bổ sung ô tìm nơi sinh miễn phí qua Photon theo lựa chọn tiếp theo của chủ dự
+án: gõ địa chỉ, bấm Tìm và chọn kết quả để điền tọa độ. Xem
+[phạm vi và giới hạn](ADDRESS_SEARCH_BETA.md). API tìm địa chỉ chạy từ trình duyệt;
+không gửi ngày giờ sinh, không khôi phục API timezone của bản máy chủ.
+
 Chủ dự án chọn bản Pages nhập múi giờ thủ công ngày 2026-10-15. Bản này
 không gọi `/api/timezone`. Người dùng nhập IANA timezone phù hợp với nơi sinh,
 không dùng UTC offset cố định. Bộ tính thời gian, thiên văn và luận giải không đổi.

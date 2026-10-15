@@ -10,6 +10,11 @@ nhập múi giờ IANA thủ công và giữ nguyên bộ tính lá số. Xem
 `npm run build:pages`, kiểm tra bằng `npm run verify:pages`; các lệnh máy chủ
 bên dưới tiếp tục giữ chức năng tra múi giờ tự động.
 
+Form hỗ trợ tìm **Nơi sinh** bằng địa chỉ/tên bệnh viện/thành phố qua Photon miễn
+phí, sau đó người dùng chọn kết quả để điền tọa độ. Ô tọa độ thủ công nằm trong
+phần mở rộng. Dịch vụ có giới hạn độ phủ và availability; xem
+[phạm vi tìm địa chỉ beta](docs/ADDRESS_SEARCH_BETA.md).
+
 ```bash
 npm install
 npm run dev

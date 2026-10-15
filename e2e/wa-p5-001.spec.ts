@@ -82,6 +82,7 @@ test("canonical birth-data flow renders Western chart, tables, and evidence", as
   await page.getByLabel("Ngày sinh", { exact: false }).fill(birthData.birthDate);
   await page.getByLabel("Giờ sinh", { exact: false }).fill(birthData.hour);
   await page.getByLabel("Phút sinh", { exact: false }).fill(birthData.minute);
+  await page.locator("#manual-coordinates > summary").click();
   await page.getByLabel("Tọa độ nơi sinh", { exact: false }).fill(birthData.coordinates);
   await expect(page.getByLabel("Múi giờ IANA", { exact: false })).toHaveValue(
     birthData.timezone,

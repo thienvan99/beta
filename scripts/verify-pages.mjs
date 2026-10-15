@@ -29,10 +29,22 @@ try {
   page.setDefaultNavigationTimeout(20_000);
   const errors = [];
   const apiRequests = [];
+  const placeRequests = [];
+  await page.route("https://photon.komoot.io/api/**", async route => {
+    const url = new URL(route.request().url());
+    placeRequests.push(url);
+    if (url.searchParams.get("q") === "Dịch vụ lỗi") { await route.fulfill({ json: { error: "unavailable" } }); return; }
+    if (url.searchParams.get("q") === "Phản hồi chậm") await new Promise(done => setTimeout(done, 400));
+    const features = url.searchParams.get("q") === "Không có địa chỉ" ? [] : [
+      { geometry: { type: "Point", coordinates: [105.8, 21.0] }, properties: { name: "Địa danh khác", city: "Hà Nội", country: "Việt Nam", type: "city", osm_id: 1 } },
+      { geometry: { type: "Point", coordinates: [106.6297, 10.8231] }, properties: { name: "Nơi sinh kiểm thử", city: "Hồ Chí Minh", country: "Việt Nam", type: "house", osm_id: 2 } },
+    ];
+    await route.fulfill({ json: { features } });
+  });
   page.on("pageerror", error => errors.push(error.message));
   page.on("response", response => { if (response.status() >= 400) console.log(`HTTP ${response.status()}: ${response.url()}`); });
   page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
-  page.on("request", request => { if (request.url().includes("/api/")) apiRequests.push(request.url()); });
+  page.on("request", request => { if (new URL(request.url()).pathname.endsWith("/api/timezone")) apiRequests.push(request.url()); });
   await mkdir(resolve(root, "test-results/pages"), { recursive: true });
   for (const width of [1280, 768, 390, 360]) {
     await page.setViewportSize({ width, height: 900 });
@@ -41,7 +53,19 @@ try {
     await page.getByLabel("Ngày sinh", { exact: false }).fill("1990-01-15");
     await page.getByLabel("Giờ sinh", { exact: false }).fill("8");
     await page.getByLabel("Phút sinh", { exact: false }).fill("30");
-    await page.getByLabel("Tọa độ nơi sinh", { exact: false }).fill("10.8231, 106.6297");
+    const placeQuery = page.getByRole("textbox", { name: "Nơi sinh", exact: true });
+    const beforeSearch = placeRequests.length;
+    await placeQuery.fill("Bệnh viện, Hồ Chí Minh");
+    assert.equal(placeRequests.length, beforeSearch);
+    await placeQuery.press("Enter");
+    await expect(page.locator("#birth-place-results button")).toHaveCount(2);
+    await expect(page.getByRole("button", { name: "Lập lá số" })).toBeDisabled();
+    await page.locator("#birth-place-results button").nth(1).focus();
+    await page.locator("#birth-place-results button").nth(1).press("Enter");
+    await expect(placeQuery).toBeFocused();
+    await expect(page.locator("#coordinates")).toHaveValue("10.8231, 106.6297");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+    await page.screenshot({ path: resolve(root, `test-results/pages/address-${width}.png`) });
     const timezone = page.getByLabel("Múi giờ IANA", { exact: false });
     await expect(timezone).toHaveValue("");
     await timezone.fill("UTC+7");
@@ -63,6 +87,30 @@ try {
     await page.screenshot({ path: resolve(root, `test-results/pages/result-${width}.png`) });
     console.log(`PASS: manual timezone, validation, results, reload, privacy, overflow at ${width}px`);
   }
+  await page.goto(`${origin}/beta/`);
+  await page.getByRole("textbox", { name: "Nơi sinh", exact: true }).fill("Không có địa chỉ");
+  await page.getByRole("button", { name: "Tìm địa chỉ", exact: true }).click();
+  await expect(page.getByText(/Chưa tìm thấy\./)).toBeVisible();
+  await expect(page.locator("#coordinates")).toHaveValue("");
+  await page.locator("#manual-coordinates > summary").click();
+  await page.getByLabel("Tọa độ nơi sinh", { exact: false }).fill("10.8231, 106.6297");
+  await expect(page.locator("#coordinates")).toHaveValue("10.8231, 106.6297");
+  await page.reload();
+  await page.getByRole("textbox", { name: "Nơi sinh", exact: true }).fill("Dịch vụ lỗi");
+  await page.getByRole("button", { name: "Tìm địa chỉ", exact: true }).click();
+  await expect(page.getByText(/Chưa kết nối được dịch vụ/)).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Nơi sinh", exact: true })).toHaveValue("Dịch vụ lỗi");
+  await page.reload();
+  const changingQuery = page.getByRole("textbox", { name: "Nơi sinh", exact: true });
+  await changingQuery.fill("Phản hồi chậm");
+  await changingQuery.press("Enter");
+  await expect(page.getByRole("button", { name: "Đang tìm…", exact: true })).toBeVisible();
+  await changingQuery.fill("Đã đổi địa chỉ");
+  await page.waitForTimeout(600);
+  await expect(page.locator("#birth-place-results button")).toHaveCount(0);
+  await expect(page.locator("#coordinates")).toHaveValue("");
+  console.log("PASS: address selection, no auto-search/auto-selection, empty/error recovery, stale-response rejection, manual fallback");
+  for (const url of placeRequests) assert.deepEqual([...url.searchParams.keys()], ["q", "limit"]);
   await page.goto(`${origin}/beta/ket-qua/`);
   await page.waitForURL("**/beta/ket-qua/bat-tu/");
   await page.evaluate(() => sessionStorage.clear());

@@ -45,6 +45,8 @@ import {
 } from "@/lib/birth-profile-storage";
 import { parseCoordinates } from "@/lib/coordinates";
 import { isGitHubPages } from "@/config/deployment";
+import { BirthPlaceSearch } from "./birth-place-search";
+import type { BirthPlace } from "@/lib/place-search";
 
 const inputClassName =
   "mt-2 h-11 w-full rounded-md border border-[#cad3d0] bg-white px-3 text-[15px] text-[#182a29] outline-none transition placeholder:text-[#95a19f] focus:border-[#1c6d68] focus:ring-3 focus:ring-[#1c6d68]/12 disabled:cursor-not-allowed disabled:bg-[#edf1f0]";
@@ -56,7 +58,7 @@ const timeZoneLookupErrorMessage =
   "Không xác định được múi giờ từ tọa độ. Hãy nhập IANA timezone hợp lệ, ví dụ: Asia/Ho_Chi_Minh.";
 
 const privacyMessage =
-  "Thông tin sinh được lưu trên trình duyệt của thiết bị này và không được gửi lên máy chủ. Bạn có thể xóa bất kỳ lúc nào.";
+  "Bản nháp và hồ sơ được lưu trên trình duyệt của thiết bị này. Dịch vụ tìm địa chỉ chỉ nhận nội dung ô Nơi sinh khi bạn bấm Tìm, không nhận ngày giờ sinh hay giới tính. Bạn có thể xóa hồ sơ bất kỳ lúc nào.";
 
 const coordinateHelpId = "coordinates-help";
 const coordinateFeedbackId = "coordinates-feedback";
@@ -101,6 +103,8 @@ export function BirthInformationForm() {
   const [values, setValues] = useState<BirthDataDraft>(initialBirthData);
   const [errors, setErrors] = useState<BirthErrors>({});
   const [coordinateInput, setCoordinateInput] = useState("");
+  const [selectedPlace, setSelectedPlace] = useState<BirthPlace | null>(null);
+  const [placeSearchRevision, setPlaceSearchRevision] = useState(0);
   const [coordinateTouched, setCoordinateTouched] = useState(false);
   const [draftReady, setDraftReady] = useState(false);
   const [profileName, setProfileName] = useState("");
@@ -133,6 +137,8 @@ export function BirthInformationForm() {
         : undefined;
 
   function applyDraft(draft: StoredBirthDraft) {
+    setSelectedPlace(null);
+    setPlaceSearchRevision(current => current + 1);
     const coordinates = parseCoordinates(draft.coordinates);
     manualTimeZoneRef.current = false;
     setCoordinateInput(draft.coordinates);
@@ -267,6 +273,7 @@ export function BirthInformationForm() {
   }
 
   function updateCoordinates(input: string) {
+    setSelectedPlace(null);
     const parsed = parseCoordinates(input);
     manualTimeZoneRef.current = false;
     setCoordinateInput(input);
@@ -327,6 +334,10 @@ export function BirthInformationForm() {
 
       setErrors(nextErrors);
       if (firstInvalidField) {
+        if (firstInvalidField === "coordinates") {
+          const details = document.getElementById("manual-coordinates");
+          if (details instanceof HTMLDetailsElement) details.open = true;
+        }
         document.getElementById(firstInvalidField)?.focus();
       }
       return;
@@ -406,7 +417,9 @@ export function BirthInformationForm() {
     applyDraft(birthProfileToDraft(profile));
     setStorageMessage({
       tone: "success",
-      text: `Đã mở “${profile.name}” vào form. Múi giờ sẽ được tính lại từ tọa độ.`,
+      text: isGitHubPages
+        ? `Đã mở “${profile.name}” vào form với tọa độ đã lưu. Hãy nhập lại múi giờ.`
+        : `Đã mở “${profile.name}” vào form. Múi giờ sẽ được tính lại từ tọa độ.`,
     });
   }
 
@@ -499,6 +512,16 @@ export function BirthInformationForm() {
             </div>
 
             <div className="sm:col-span-2">
+              <BirthPlaceSearch key={placeSearchRevision} selected={selectedPlace}
+                onClear={() => { if (coordinateInput) updateCoordinates(""); }}
+                onSelect={place => {
+                  updateCoordinates(`${place.latitude}, ${place.longitude}`);
+                  setSelectedPlace(place);
+                }} />
+              {recognizedCoordinates && !selectedPlace && <p className="mt-3 text-sm text-[#315450]">Đang dùng tọa độ đã nhập hoặc đã lưu. Bạn có thể tìm nơi sinh mới hoặc xem tọa độ bên dưới.</p>}
+              <details id="manual-coordinates" className="mt-4 rounded-md border border-[#d7dfdc] p-3">
+              <summary className="cursor-pointer text-base font-semibold text-[#1c6d68] focus-visible:outline-3 focus-visible:outline-offset-2">Nhập tọa độ thủ công / xem chi tiết</summary>
+              <div className="mt-3">
               <label htmlFor="coordinates" className="text-sm font-semibold text-[#2d4140]">
                 Tọa độ nơi sinh <span className="text-[#a94f2c]">*</span>
               </label>
@@ -596,6 +619,8 @@ export function BirthInformationForm() {
               >
                 {coordinateError ?? ""}
               </p>
+              </div>
+              </details>
             </div>
 
             <FormField htmlFor="timezone" label="Múi giờ IANA" error={timeZoneError}>
