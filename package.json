@@ -9,7 +9,7 @@
     "verify:pages": "node scripts/verify-pages.mjs",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run --exclude e2e/** --exclude .pages-build/**",
+    "test": "vitest run --exclude \"e2e/**\" --exclude \".pages-build/**\"",
     "test:e2e": "playwright test"
   },
   "dependencies": {
