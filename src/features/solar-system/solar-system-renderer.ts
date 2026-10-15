@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { withBasePath } from "../../config/deployment";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
   eclipticVectorToSceneAxes,
@@ -566,7 +567,7 @@ export class SolarSystemRenderer {
   ): void {
     const loader = new THREE.TextureLoader();
     loader.load(
-      path,
+      withBasePath(path),
       (texture) => {
         if (this.disposed) {
           texture.dispose();

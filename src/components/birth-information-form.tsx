@@ -44,6 +44,7 @@ import {
   type StoredBirthProfile,
 } from "@/lib/birth-profile-storage";
 import { parseCoordinates } from "@/lib/coordinates";
+import { isGitHubPages } from "@/config/deployment";
 
 const inputClassName =
   "mt-2 h-11 w-full rounded-md border border-[#cad3d0] bg-white px-3 text-[15px] text-[#182a29] outline-none transition placeholder:text-[#95a19f] focus:border-[#1c6d68] focus:ring-3 focus:ring-[#1c6d68]/12 disabled:cursor-not-allowed disabled:bg-[#edf1f0]";
@@ -147,7 +148,7 @@ export function BirthInformationForm() {
       gender: draft.gender,
     });
     setErrors({});
-    setTimeZoneStatus(coordinates ? "loading" : "idle");
+    setTimeZoneStatus(coordinates && !isGitHubPages ? "loading" : "idle");
   }
 
   useEffect(() => {
@@ -190,7 +191,7 @@ export function BirthInformationForm() {
   useEffect(() => {
     const coordinates = parseCoordinates(coordinateInput);
 
-    if (!coordinates) {
+    if (!coordinates || isGitHubPages) {
       return;
     }
 
@@ -269,7 +270,7 @@ export function BirthInformationForm() {
     const parsed = parseCoordinates(input);
     manualTimeZoneRef.current = false;
     setCoordinateInput(input);
-    setTimeZoneStatus(parsed ? "loading" : "idle");
+    setTimeZoneStatus(parsed && !isGitHubPages ? "loading" : "idle");
     setValues((current) => ({
       ...current,
       latitude: parsed ? String(parsed.latitude) : "",
@@ -598,6 +599,14 @@ export function BirthInformationForm() {
             </div>
 
             <FormField htmlFor="timezone" label="Múi giờ IANA" error={timeZoneError}>
+              {isGitHubPages && (
+                <p id="timezone-manual-help" className="mt-2 text-base leading-6 text-[#526560]">
+                  Bản GitHub Pages không tự tìm múi giờ. Nhập múi giờ IANA đúng với nơi sinh,
+                  ví dụ Asia/Ho_Chi_Minh hoặc Europe/London; không nhập UTC+7.
+                  Hệ thống dùng múi giờ này để tính lịch sử giờ địa phương và giờ mùa hè.
+                  Khi mở lại hồ sơ đã lưu hoặc đổi tọa độ, bạn cần nhập lại múi giờ.
+                </p>
+              )}
               <input
                 id="timezone"
                 name="timezone"
@@ -609,7 +618,7 @@ export function BirthInformationForm() {
                 spellCheck={false}
                 autoComplete="off"
                 aria-busy={timeZoneStatus === "loading"}
-                aria-describedby="timezone-error"
+                aria-describedby={isGitHubPages ? "timezone-error timezone-manual-help" : "timezone-error"}
                 aria-invalid={Boolean(timeZoneError)}
                 className={inputClassName}
               />

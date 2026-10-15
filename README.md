@@ -4,6 +4,12 @@ Giao diện nhập thông tin sinh, chuẩn hóa tọa độ và thời gian, c�
 
 ## Chạy dự án
 
+Bản GitHub Pages tại `https://thienvan99.github.io/beta/` có cấu hình riêng,
+nhập múi giờ IANA thủ công và giữ nguyên bộ tính lá số. Xem
+[hướng dẫn và trạng thái xuất bản](docs/GITHUB_PAGES.md). Dựng bản này bằng
+`npm run build:pages`, kiểm tra bằng `npm run verify:pages`; các lệnh máy chủ
+bên dưới tiếp tục giữ chức năng tra múi giờ tự động.
+
 ```bash
 npm install
 npm run dev

@@ -1,3 +1,5 @@
+import { withBasePath } from "./deployment";
+
 const LOCAL_SITE_ORIGIN = "http://localhost:3000";
 
 type SiteOriginOptions = {
@@ -44,7 +46,7 @@ export function resolveSiteOrigin({
 export const siteOrigin = resolveSiteOrigin();
 
 export function getAbsoluteSiteUrl(pathname: string): string {
-  return new URL(pathname, `${siteOrigin}/`).toString();
+  return new URL(withBasePath(pathname), `${siteOrigin}/`).toString();
 }
 
 export const homeCanonicalUrl = getAbsoluteSiteUrl("/");
