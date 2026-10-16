@@ -3,6 +3,8 @@
 import Link from "next/link";
 import {
   ArrowLeft,
+  ChevronDown,
+  ChevronUp,
   Clock3,
   Compass,
   Eye,
@@ -63,6 +65,9 @@ export function SolarSystemExplorer() {
   const restoreObserverEntryFocusRef = useRef(false);
   const planetButtonRefs = useRef(new Map<PlanetId, HTMLButtonElement>());
   const [selectedPlanetId, setSelectedPlanetId] = useState<PlanetId | null>(null);
+  const [controlsExpanded, setControlsExpanded] = useState(true);
+  const [birthInfoExpanded, setBirthInfoExpanded] = useState(true);
+  const [headerExpanded, setHeaderExpanded] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [orbitsVisible, setOrbitsVisible] = useState(true);
   const [labelsVisible, setLabelsVisible] = useState(true);
@@ -307,137 +312,165 @@ export function SolarSystemExplorer() {
       />
 
       <header className={styles.header}>
-        <div>
+        <div className={styles.headerActions}>
           <Link href="/" className={styles.backLink}>
             <ArrowLeft aria-hidden="true" size={16} />
             Thiên Vận
           </Link>
+          <button
+            type="button"
+            className={`${styles.panelToggle} ${styles.headerToggle}`}
+            aria-expanded={headerExpanded}
+            aria-controls="solar-header-content"
+            aria-label={headerExpanded ? "Thu gọn tiêu đề Hệ Mặt Trời" : "Mở tiêu đề Hệ Mặt Trời"}
+            title={headerExpanded ? "Thu gọn tiêu đề" : "Mở tiêu đề Hệ Mặt Trời"}
+            onClick={() => setHeaderExpanded((expanded) => !expanded)}
+          >
+            {headerExpanded ? <ChevronUp aria-hidden="true" size={16} /> : <ChevronDown aria-hidden="true" size={16} />}
+          </button>
+        </div>
+        <div id="solar-header-content" className={headerExpanded ? undefined : styles.srOnly}>
           <p className={styles.eyebrow}>Solar System Explorer</p>
           <h1 id="solar-system-title">Hệ Mặt Trời</h1>
           <p className={styles.subtitle}>Khám phá không gian quanh chúng ta</p>
         </div>
       </header>
 
-      {observerStage === "solar" ? <div className={styles.controls} aria-label="Điều khiển mô phỏng">
+      {observerStage === "solar" ? <div className={styles.controlsDock}>
         <button
           type="button"
-          className={styles.controlButton}
-          onClick={togglePaused}
-          aria-pressed={isPaused}
-          aria-label={isPaused ? "Tiếp tục chuyển động" : "Tạm dừng chuyển động"}
-          title={isPaused ? "Tiếp tục" : "Tạm dừng"}
+          className={styles.panelToggle}
+          aria-expanded={controlsExpanded}
+          aria-controls="solar-controls-content"
+          aria-label={controlsExpanded ? "Thu gọn điều khiển" : "Mở điều khiển"}
+          onClick={() => setControlsExpanded((expanded) => !expanded)}
         >
-          {isPaused ? <Play aria-hidden="true" size={18} /> : <Pause aria-hidden="true" size={18} />}
+          {controlsExpanded ? <ChevronUp aria-hidden="true" size={16} /> : <ChevronDown aria-hidden="true" size={16} />}
+          Điều khiển
         </button>
-        <button
-          type="button"
-          className={styles.controlButton}
-          onClick={showOverview}
-          aria-label="Trở về góc nhìn toàn Hệ Mặt Trời"
-          title="Toàn hệ"
-        >
-          <RotateCcw aria-hidden="true" size={18} />
-        </button>
-        <button
-          type="button"
-          className={styles.controlButton}
-          onClick={toggleOrbits}
-          aria-pressed={orbitsVisible}
-          aria-label={orbitsVisible ? "Ẩn đường quỹ đạo" : "Hiện đường quỹ đạo"}
-          title={orbitsVisible ? "Ẩn quỹ đạo" : "Hiện quỹ đạo"}
-        >
-          {orbitsVisible ? <Eye aria-hidden="true" size={18} /> : <EyeOff aria-hidden="true" size={18} />}
-        </button>
-        <button
-          type="button"
-          className={styles.controlButton}
-          onClick={toggleLabels}
-          aria-pressed={labelsVisible}
-          aria-label={labelsVisible ? "Ẩn nhãn hành tinh" : "Hiện nhãn hành tinh"}
-          title={labelsVisible ? "Ẩn nhãn" : "Hiện nhãn"}
-        >
-          <Tags aria-hidden="true" size={18} />
-        </button>
-      </div> : null}
+        <div id="solar-controls-content" className={styles.controlsContent} hidden={!controlsExpanded}>
+          <div className={styles.controls} aria-label="Điều khiển mô phỏng">
+            <button
+              type="button"
+              className={styles.controlButton}
+              onClick={togglePaused}
+              aria-pressed={isPaused}
+              aria-label={isPaused ? "Tiếp tục chuyển động" : "Tạm dừng chuyển động"}
+              title={isPaused ? "Tiếp tục" : "Tạm dừng"}
+            >
+              {isPaused ? <Play aria-hidden="true" size={18} /> : <Pause aria-hidden="true" size={18} />}
+            </button>
+            <button
+              type="button"
+              className={styles.controlButton}
+              onClick={showOverview}
+              aria-label="Trở về góc nhìn toàn Hệ Mặt Trời"
+              title="Toàn hệ"
+            >
+              <RotateCcw aria-hidden="true" size={18} />
+            </button>
+            <button
+              type="button"
+              className={styles.controlButton}
+              onClick={toggleOrbits}
+              aria-pressed={orbitsVisible}
+              aria-label={orbitsVisible ? "Ẩn đường quỹ đạo" : "Hiện đường quỹ đạo"}
+              title={orbitsVisible ? "Ẩn quỹ đạo" : "Hiện quỹ đạo"}
+            >
+              {orbitsVisible ? <Eye aria-hidden="true" size={18} /> : <EyeOff aria-hidden="true" size={18} />}
+            </button>
+            <button
+              type="button"
+              className={styles.controlButton}
+              onClick={toggleLabels}
+              aria-pressed={labelsVisible}
+              aria-label={labelsVisible ? "Ẩn nhãn hành tinh" : "Hiện nhãn hành tinh"}
+              title={labelsVisible ? "Ẩn nhãn" : "Hiện nhãn"}
+            >
+              <Tags aria-hidden="true" size={18} />
+            </button>
+          </div>
 
-      {observerStage === "solar" ? <div className={styles.speedControl}>
-        <label htmlFor="simulation-speed" className={styles.speedLabel}>
-          <span>Tốc độ thời gian</span>
-          <output htmlFor="simulation-speed">{formatSpeed(simulationSpeed)}</output>
-        </label>
-        <input
-          id="simulation-speed"
-          className={styles.speedRange}
-          type="range"
-          min="0"
-          max={SIMULATION_SPEED_OPTIONS.length - 1}
-          step="1"
-          value={speedIndex}
-          onInput={(event) => changeSpeed(Number(event.currentTarget.value))}
-          onChange={(event) => changeSpeed(Number(event.currentTarget.value))}
-          aria-valuetext={`${formatSpeed(simulationSpeed)}, ${formatTimeRate(simulationSpeed)}`}
-          disabled={sceneStatus !== "ready"}
-        />
-        <div className={styles.speedScale} aria-hidden="true">
-          <span>0,1 ngày/s</span>
-          <span>1 ngày/s</span>
-          <span>10 ngày/s</span>
-        </div>
-      </div> : null}
-
-      {observerStage === "solar" ? <section className={styles.timeControl} aria-label="Ngày giờ mô phỏng thiên văn">
-        <div className={styles.timeHeading}>
-          <span>Ngày / giờ</span>
-          <button type="button" onClick={setToNow} disabled={sceneStatus !== "ready"}>
-            <Clock3 aria-hidden="true" size={14} />
-            Bây giờ
-          </button>
-        </div>
-        <div className={styles.timeFields}>
-          <label>
-            <span>Ngày</span>
+          <div className={styles.speedControl}>
+            <label htmlFor="simulation-speed" className={styles.speedLabel}>
+              <span>Tốc độ thời gian</span>
+              <output htmlFor="simulation-speed">{formatSpeed(simulationSpeed)}</output>
+            </label>
             <input
-              type="date"
-              min="1600-01-01"
-              max="2200-12-31"
-              value={dateTimeInput.date}
-              onFocus={pauseForTimeEditing}
-              onChange={(event) => changeSimulationDateTime(event.currentTarget.value, dateTimeInput.time)}
+              id="simulation-speed"
+              className={styles.speedRange}
+              type="range"
+              min="0"
+              max={SIMULATION_SPEED_OPTIONS.length - 1}
+              step="1"
+              value={speedIndex}
+              onInput={(event) => changeSpeed(Number(event.currentTarget.value))}
+              onChange={(event) => changeSpeed(Number(event.currentTarget.value))}
+              aria-valuetext={`${formatSpeed(simulationSpeed)}, ${formatTimeRate(simulationSpeed)}`}
               disabled={sceneStatus !== "ready"}
             />
-          </label>
-          <label>
-            <span>Giờ</span>
-            <input
-              type="time"
-              step="60"
-              value={dateTimeInput.time}
-              onFocus={pauseForTimeEditing}
-              onChange={(event) => changeSimulationDateTime(dateTimeInput.date, event.currentTarget.value)}
-              disabled={sceneStatus !== "ready"}
-            />
-          </label>
+            <div className={styles.speedScale} aria-hidden="true">
+              <span>0,1 ngày/s</span>
+              <span>1 ngày/s</span>
+              <span>10 ngày/s</span>
+            </div>
+          </div>
+
+          <section className={styles.timeControl} aria-label="Ngày giờ mô phỏng thiên văn">
+            <div className={styles.timeHeading}>
+              <span>Ngày / giờ</span>
+              <button type="button" onClick={setToNow} disabled={sceneStatus !== "ready"}>
+                <Clock3 aria-hidden="true" size={14} />
+                Bây giờ
+              </button>
+            </div>
+            <div className={styles.timeFields}>
+              <label>
+                <span>Ngày</span>
+                <input
+                  type="date"
+                  min="1600-01-01"
+                  max="2200-12-31"
+                  value={dateTimeInput.date}
+                  onFocus={pauseForTimeEditing}
+                  onChange={(event) => changeSimulationDateTime(event.currentTarget.value, dateTimeInput.time)}
+                  disabled={sceneStatus !== "ready"}
+                />
+              </label>
+              <label>
+                <span>Giờ</span>
+                <input
+                  type="time"
+                  step="60"
+                  value={dateTimeInput.time}
+                  onFocus={pauseForTimeEditing}
+                  onChange={(event) => changeSimulationDateTime(dateTimeInput.date, event.currentTarget.value)}
+                  disabled={sceneStatus !== "ready"}
+                />
+              </label>
+            </div>
+            <label className={styles.timeZoneField}>
+              <span>Múi giờ</span>
+              <select value={timeZone} onChange={(event) => setTimeZone(event.currentTarget.value)}>
+                {timeZoneOptions.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
+              </select>
+            </label>
+            <p className={styles.utcTime}>
+              {simulationTimestamp === null ? "Đang đồng bộ UTC…" : new Date(simulationTimestamp).toISOString().replace(".000Z", "Z")}
+            </p>
+            <p className={styles.ephemerisSources}>
+              <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noreferrer">
+                Astronomy Engine 2.1.19
+              </a>
+              <span aria-hidden="true"> · </span>
+              <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noreferrer">
+                mốc đại diện: JPL Horizons
+              </a>
+            </p>
+            {timeError ? <p className={styles.timeError} role="alert">{timeError}</p> : null}
+          </section>
         </div>
-        <label className={styles.timeZoneField}>
-          <span>Múi giờ</span>
-          <select value={timeZone} onChange={(event) => setTimeZone(event.currentTarget.value)}>
-            {timeZoneOptions.map((zone) => <option key={zone} value={zone}>{zone}</option>)}
-          </select>
-        </label>
-        <p className={styles.utcTime}>
-          {simulationTimestamp === null ? "Đang đồng bộ UTC…" : new Date(simulationTimestamp).toISOString().replace(".000Z", "Z")}
-        </p>
-        <p className={styles.ephemerisSources}>
-          <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noreferrer">
-            Astronomy Engine 2.1.19
-          </a>
-          <span aria-hidden="true"> · </span>
-          <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noreferrer">
-            mốc đại diện: JPL Horizons
-          </a>
-        </p>
-        {timeError ? <p className={styles.timeError} role="alert">{timeError}</p> : null}
-      </section> : null}
+      </div> : null}
 
       {sceneStatus === "loading" ? (
         <div className={styles.status} role="status">
@@ -540,42 +573,56 @@ export function SolarSystemExplorer() {
         <span>Cuộn hoặc chụm để thu phóng</span>
       </div> : null}
 
-      {observerStage === "solar" ? <p className={styles.simulationNote}>
-        Vị trí thiên thể được tính theo ngày/giờ bằng Astronomy Engine. Phạm vi sử dụng hiện tại: 1600–2200; một số mốc đại diện được đối chiếu hồi quy với NASA/JPL Horizons. Kích thước và khoảng cách 3D đã được điều chỉnh để dễ quan sát.
-      </p> : null}
-
       {observerStage === "solar" && !selectedPlanet ? (
-        <aside className={styles.birthObserverEntry} aria-labelledby="birth-observer-entry-title">
-          <p className={styles.birthObserverEntryEyebrow}>Từ Hệ Mặt Trời đến nơi sinh</p>
-          <h2 id="birth-observer-entry-title">Bầu trời lúc sinh</h2>
-          {observerEntry.status === "loading" ? <p role="status">Đang kiểm tra hồ sơ sinh đang hoạt động…</p> : null}
-          {observerEntry.status === "missing-session" ? (
-            <p>Chưa có hồ sơ sinh trong phiên này. <Link href="/">Nhập hoặc mở hồ sơ</Link> để dùng Birth Observer.</p>
-          ) : null}
-          {observerEntry.status === "invalid-context" ? (
-            <p role="alert">Không thể chuẩn hóa hồ sơ sinh hiện tại. Dữ liệu không được thay thế bằng một mốc giả.</p>
-          ) : null}
-          {observerEntry.status === "unsupported" ? (
-            <p role="status">
-              Birth Observer chưa hỗ trợ mốc {observerEntry.context.instantUtc}; phạm vi hiện tại là 1600–2200. Thời điểm gốc được giữ nguyên, không clamp.
+        <div className={styles.birthInfoDock}>
+          <button
+            type="button"
+            className={styles.panelToggle}
+            aria-expanded={birthInfoExpanded}
+            aria-controls="solar-birth-info-content"
+            aria-label={birthInfoExpanded ? "Thu gọn thông tin bầu trời lúc sinh" : "Mở thông tin bầu trời lúc sinh"}
+            onClick={() => setBirthInfoExpanded((expanded) => !expanded)}
+          >
+            {birthInfoExpanded ? <ChevronDown aria-hidden="true" size={16} /> : <ChevronUp aria-hidden="true" size={16} />}
+            Bầu trời lúc sinh
+          </button>
+          <div id="solar-birth-info-content" className={styles.birthInfoContent} hidden={!birthInfoExpanded}>
+            <aside className={styles.birthObserverEntry} aria-labelledby="birth-observer-entry-title">
+              <p className={styles.birthObserverEntryEyebrow}>Từ Hệ Mặt Trời đến nơi sinh</p>
+              <h2 id="birth-observer-entry-title">Bầu trời lúc sinh</h2>
+              {observerEntry.status === "loading" ? <p role="status">Đang kiểm tra hồ sơ sinh đang hoạt động…</p> : null}
+              {observerEntry.status === "missing-session" ? (
+                <p>Chưa có hồ sơ sinh trong phiên này. <Link href="/">Nhập hoặc mở hồ sơ</Link> để dùng Birth Observer.</p>
+              ) : null}
+              {observerEntry.status === "invalid-context" ? (
+                <p role="alert">Không thể chuẩn hóa hồ sơ sinh hiện tại. Dữ liệu không được thay thế bằng một mốc giả.</p>
+              ) : null}
+              {observerEntry.status === "unsupported" ? (
+                <p role="status">
+                  Birth Observer chưa hỗ trợ mốc {observerEntry.context.instantUtc}; phạm vi hiện tại là 1600–2200. Thời điểm gốc được giữ nguyên, không clamp.
+                </p>
+              ) : null}
+              {observerEntry.status === "ready" ? (
+                <>
+                  <p>Dùng đúng hồ sơ sinh đang hoạt động để đi tới Trái Đất, rồi chuyển sang vòm trời địa phương.</p>
+                  <button
+                    ref={observerEntryButtonRef}
+                    type="button"
+                    onClick={enterBirthObserver}
+                    disabled={sceneStatus !== "ready"}
+                  >
+                    <Compass aria-hidden="true" size={18} />
+                    Xem bầu trời lúc sinh
+                  </button>
+                </>
+              ) : null}
+              {observerError ? <p className={styles.birthObserverError} role="alert">{observerError}</p> : null}
+            </aside>
+            <p className={styles.simulationNote}>
+              Vị trí thiên thể được tính theo ngày/giờ bằng Astronomy Engine. Phạm vi sử dụng hiện tại: 1600–2200; một số mốc đại diện được đối chiếu hồi quy với NASA/JPL Horizons. Kích thước và khoảng cách 3D đã được điều chỉnh để dễ quan sát.
             </p>
-          ) : null}
-          {observerEntry.status === "ready" ? (
-            <>
-              <p>Dùng đúng hồ sơ sinh đang hoạt động để đi tới Trái Đất, rồi chuyển sang vòm trời địa phương.</p>
-              <button
-                ref={observerEntryButtonRef}
-                type="button"
-                onClick={enterBirthObserver}
-                disabled={sceneStatus !== "ready"}
-              >
-                <Compass aria-hidden="true" size={18} />
-                Xem bầu trời lúc sinh
-              </button>
-            </>
-          ) : null}
-          {observerError ? <p className={styles.birthObserverError} role="alert">{observerError}</p> : null}
-        </aside>
+          </div>
+        </div>
       ) : null}
 
       {observerStage === "birth-earth" ? (
