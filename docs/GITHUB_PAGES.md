@@ -25,8 +25,9 @@ không gửi ngày giờ sinh, không khôi phục API timezone của bản máy
 Chủ dự án chọn bản Pages nhập múi giờ thủ công ngày 2026-10-15. Bản này
 không gọi `/api/timezone`. Người dùng nhập IANA timezone phù hợp với nơi sinh,
 không dùng UTC offset cố định. Bộ tính thời gian, thiên văn và luận giải không đổi.
-Khi khôi phục bản nháp/hồ sơ hoặc đổi tọa độ, phải nhập lại múi giờ vì schema
-lưu hồ sơ hiện tại không lưu timezone. Không tự đoán timezone từ trình duyệt.
+Ô múi giờ mặc định là `Asia/Ho_Chi_Minh`; khi khôi phục bản nháp/hồ sơ hoặc
+đổi tọa độ, form đặt lại mặc định này. Người sinh ở nơi khác tự nhập IANA
+timezone phù hợp. Không tự đoán timezone từ trình duyệt.
 
 Bản chạy máy chủ (`npm run dev` / `npm run build`) tiếp tục dùng API geo-tz cũ.
 

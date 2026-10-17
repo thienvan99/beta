@@ -49,7 +49,7 @@ try {
   for (const width of [1280, 768, 390, 360]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(`${origin}/beta/`);
-    await expect(page.locator("#timezone-manual-help")).toBeVisible();
+    await expect(page.locator("#timezone-manual-help")).toHaveCount(0);
     await page.getByLabel("Ngày sinh", { exact: false }).fill("1990-01-15");
     await page.getByLabel("Giờ sinh", { exact: false }).fill("8");
     await page.getByLabel("Phút sinh", { exact: false }).fill("30");
@@ -67,13 +67,13 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
     await page.screenshot({ path: resolve(root, `test-results/pages/address-${width}.png`) });
     const timezone = page.getByLabel("Múi giờ IANA", { exact: false });
-    await expect(timezone).toHaveValue("");
+    await expect(timezone).toHaveValue("Asia/Ho_Chi_Minh");
     await timezone.fill("UTC+7");
     await page.getByLabel("Giới tính", { exact: false }).selectOption("male");
     await expect(page.getByRole("button", { name: "Lập lá số" })).toBeDisabled();
     await expect(page).toHaveURL(`${origin}/beta/`);
     await expect(page.locator("#timezone-error")).not.toBeEmpty();
-    await timezone.fill("Asia/Ho_Chi_Minh");
+    await timezone.fill("Europe/London");
     await page.getByRole("button", { name: "Lập lá số" }).click();
     await page.waitForURL("**/beta/ket-qua/bat-tu/");
     await page.getByRole("tab", { name: "Chiêm tinh Tây phương" }).click();

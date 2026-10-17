@@ -39,7 +39,7 @@ export const initialBirthData: BirthDataDraft = {
   minute: "",
   latitude: "",
   longitude: "",
-  timezone: "",
+  timezone: "Asia/Ho_Chi_Minh",
   gender: "",
 };
 

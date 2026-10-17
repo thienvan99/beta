@@ -150,7 +150,7 @@ export function BirthInformationForm() {
       minute: draft.minute,
       latitude: coordinates ? String(coordinates.latitude) : "",
       longitude: coordinates ? String(coordinates.longitude) : "",
-      timezone: "",
+      timezone: "Asia/Ho_Chi_Minh",
       gender: draft.gender,
     });
     setErrors({});
@@ -282,7 +282,7 @@ export function BirthInformationForm() {
       ...current,
       latitude: parsed ? String(parsed.latitude) : "",
       longitude: parsed ? String(parsed.longitude) : "",
-      timezone: "",
+      timezone: "Asia/Ho_Chi_Minh",
     }));
     setErrors((current) => ({
       ...current,
@@ -418,7 +418,7 @@ export function BirthInformationForm() {
     setStorageMessage({
       tone: "success",
       text: isGitHubPages
-        ? `Đã mở “${profile.name}” vào form với tọa độ đã lưu. Hãy nhập lại múi giờ.`
+        ? `Đã mở “${profile.name}” vào form với tọa độ đã lưu. Múi giờ mặc định là Asia/Ho_Chi_Minh, bạn có thể sửa nếu nơi sinh khác.`
         : `Đã mở “${profile.name}” vào form. Múi giờ sẽ được tính lại từ tọa độ.`,
     });
   }
@@ -624,14 +624,6 @@ export function BirthInformationForm() {
             </div>
 
             <FormField htmlFor="timezone" label="Múi giờ IANA" error={timeZoneError}>
-              {isGitHubPages && (
-                <p id="timezone-manual-help" className="mt-2 text-base leading-6 text-[#526560]">
-                  Bản GitHub Pages không tự tìm múi giờ. Nhập múi giờ IANA đúng với nơi sinh,
-                  ví dụ Asia/Ho_Chi_Minh hoặc Europe/London; không nhập UTC+7.
-                  Hệ thống dùng múi giờ này để tính lịch sử giờ địa phương và giờ mùa hè.
-                  Khi mở lại hồ sơ đã lưu hoặc đổi tọa độ, bạn cần nhập lại múi giờ.
-                </p>
-              )}
               <input
                 id="timezone"
                 name="timezone"
@@ -643,7 +635,7 @@ export function BirthInformationForm() {
                 spellCheck={false}
                 autoComplete="off"
                 aria-busy={timeZoneStatus === "loading"}
-                aria-describedby={isGitHubPages ? "timezone-error timezone-manual-help" : "timezone-error"}
+                aria-describedby="timezone-error"
                 aria-invalid={Boolean(timeZoneError)}
                 className={inputClassName}
               />
